@@ -6,5 +6,4 @@ import com.cp2196g03g2.server.toptop.entity.Role;
 
 public interface IRoleRepository extends JpaRepository<Role, Long>{
 	Role findByAlias(String alias);
-	
 }

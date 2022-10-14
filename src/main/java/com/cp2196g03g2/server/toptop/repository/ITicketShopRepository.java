@@ -12,6 +12,4 @@ import com.cp2196g03g2.server.toptop.entity.TicketShop;
 public interface ITicketShopRepository extends JpaRepository<TicketShop, Integer>{
 	@Query("SELECT t FROM TicketShop t WHERE t.user.id = ?1")
 	List<TicketShop> findByUserId(String id);
-	
-	; 
 }

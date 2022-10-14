@@ -1,6 +1,5 @@
 package com.cp2196g03g2.server.toptop;
 
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +14,8 @@ public class ToptopApplication {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
 	}
+	
+
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ToptopApplication.class, args);

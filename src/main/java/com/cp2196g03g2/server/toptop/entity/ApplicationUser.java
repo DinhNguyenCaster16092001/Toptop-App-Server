@@ -67,7 +67,7 @@ public class ApplicationUser {
 	@OneToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL, mappedBy = "user")	
 	private List<TicketShop> ticketsShops = new ArrayList<>();
 	
-	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Coupon> coupons;
 	
 	public ApplicationUser() {
@@ -179,6 +179,10 @@ public class ApplicationUser {
 
 	public void setTicketsShops(List<TicketShop> ticketsShops) {
 		this.ticketsShops = ticketsShops;
+	}
+	
+	public void addCoupon(Coupon coupon) {
+		this.coupons.add(coupon);
 	}
 
 	@Override

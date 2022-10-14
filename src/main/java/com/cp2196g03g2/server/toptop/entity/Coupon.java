@@ -1,9 +1,11 @@
 package com.cp2196g03g2.server.toptop.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,30 +15,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "tbl_coupon")
-public class Coupon {
+public class Coupon implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column
+	@Column(unique = true, length = 10, nullable = false)
 	private String code;
 	
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
+	@Column(nullable = false)
 	private Date createdDate;
 
 	
-	@Column
+	@Column(name = "expired_at")
 	private Date expiredAt;
 	
 	@Column(name = "quantity")
@@ -51,13 +49,17 @@ public class Coupon {
 	private double value;
 
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(
-			  name = "coupon_user", 
+			  name = "tbl_coupon_user", 
 			  joinColumns = @JoinColumn(name = "coupon_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<ApplicationUser> users = new ArrayList<>();
 	
+
+	public Coupon() {
+	}
+
 
 	public Coupon(Integer id, String code, Date createdDate, Date expiredAt, Integer qty, boolean enable,
 			double value) {
@@ -162,6 +164,9 @@ public class Coupon {
 		this.users = users;
 	}
 
+	public void addUser(ApplicationUser user) {
+		this.users.add(user);
+	}
 
 	@Override
 	public String toString() {
