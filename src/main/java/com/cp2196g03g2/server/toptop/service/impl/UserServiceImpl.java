@@ -1,17 +1,20 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
+import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
@@ -35,7 +38,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	@Transactional
 	public List<ApplicationUser> findAll() {
-		return userRepository.findAll();
+		return userRepository.findAllByOrderByCreatedDateDesc();
 	}
 
 	@Override
@@ -121,5 +124,34 @@ public class UserServiceImpl implements IUserService {
 			return false;
 		}
 	}
+
+	@Override
+	public PagableObject<ApplicationUser> findAllByPage(int pageNo, int pageSize, 
+														String sortBy, String sortDir,
+														String keyword, int isActive) {
+		 Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+	                : Sort.by(sortBy).descending();
+		 
+		// create Pageable instance
+	        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+	        
+	        boolean status = isActive == 1 ? true : false;
+	        
+	        Page<ApplicationUser> users = userRepository.findAllByPage(keyword, status, pageable); 
+	
+	        List<ApplicationUser> listOfUsers = users.getContent();
+	        
+	        PagableObject<ApplicationUser> usersPage = new PagableObject<>();
+	        usersPage.setData(listOfUsers);
+	        usersPage.setPageNo(pageNo);
+	        usersPage.setPageSize(pageSize);
+	        usersPage.setTotalElements(users.getTotalElements());
+	        usersPage.setTotalPages(users.getTotalPages());
+	        usersPage.setLast(users.isLast());
+	        
+	        return usersPage;
+	}
+
+	
 
 }

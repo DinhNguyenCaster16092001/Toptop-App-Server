@@ -1,6 +1,7 @@
 package com.cp2196g03g2.server.toptop.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -58,6 +60,13 @@ public class ApplicationUser {
 	
 	@Column(name = "history", columnDefinition = "TEXT")
 	private String history;
+	
+	@CreationTimestamp
+	@Column(name = "created_date",nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
+	private Date createdDate;
+	
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive;
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name = "role_id")
@@ -184,11 +193,30 @@ public class ApplicationUser {
 	public void addCoupon(Coupon coupon) {
 		this.coupons.add(coupon);
 	}
+	
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	@Override
 	public String toString() {
-		return "ApplicationUser [id=" + id + ", email=" + email + ", password=" + password + ", fullName=" + fullName
-				+ ", history=" + history + "]";
+		return "ApplicationUser [id=" + id + ", email=" + email + ", password=" + password + ", alias=" + alias
+				+ ", avatar=" + avatar + ", fullName=" + fullName + ", history=" + history + ", createdDate="
+				+ createdDate + ", isActive=" + isActive + "]";
 	}
+
 	
 }

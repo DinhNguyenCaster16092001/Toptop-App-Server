@@ -27,10 +27,15 @@ public class UserRepositoryTest {
 	private IRoleRepository roleRepository;
 	
 	
+
+	
 	@Test
 	public void findAllUserTesting() {
-		List<ApplicationUser> users = userRepository.findAll();
-		users.forEach(System.out::println);
+		List<ApplicationUser> users = userRepository.findAllByOrderByCreatedDateDesc();
+		for (ApplicationUser applicationUser : users) {
+			System.out.println(applicationUser.getCreatedDate().toString());
+		}
+	
 	}
 	
 	/*
