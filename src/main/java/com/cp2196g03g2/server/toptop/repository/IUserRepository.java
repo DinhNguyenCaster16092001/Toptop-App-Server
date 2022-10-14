@@ -18,7 +18,7 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String>{
 	@Query("SELECT u FROM ApplicationUser u WHERE (u.email LIKE %:keyword% OR " +
 												   "u.fullName LIKE %:keyword% OR " +
 												   "u.history LIKE %:keyword% OR " +
-												   "u.role.description LIKE %:keyword%) "+
+												   "u.role.alias LIKE %:keyword%) "+
 												   "AND u.role.id IN (1,2,3,4) " +
 												   "AND u.isActive = :status " +
 												   "AND u.role.alias != 'Super Admin'")

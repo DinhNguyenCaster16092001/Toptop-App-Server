@@ -1,8 +1,7 @@
-package com.cp2196g03g2.server.toptop.controller;
-
-import java.util.List;
+package com.cp2196g03g2.server.toptop.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +16,14 @@ import com.cp2196g03g2.server.toptop.constant.AppConstants;
 import com.cp2196g03g2.server.toptop.dto.BooleanResult;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
+import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@CrossOrigin
+@RequestMapping("/api/v1/management/user")
 public class UserController {
 
 	@Autowired
@@ -41,7 +42,8 @@ public class UserController {
             @RequestParam(value = "keyword", defaultValue = AppConstants.DEFAULT_KEYWORD, required = false) String keyword,
             @RequestParam(value = "active", defaultValue = AppConstants.DEFAULT_STATUS, required = false) int status
     ){
-        return  userService.findAllByPage(pageNo, pageSize, sortBy, sortDir, keyword, status);
+		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir, keyword, status);
+        return  userService.findAllByPage(request);
     }
 
 	@GetMapping("/{id}")

@@ -1,9 +1,10 @@
-package com.cp2196g03g2.server.toptop.controller;
+package com.cp2196g03g2.server.toptop.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,8 @@ import com.cp2196g03g2.server.toptop.model.ResponeObject;
 import com.cp2196g03g2.server.toptop.service.IRoleService;
 
 @Controller
-@RequestMapping("/api/v1/role")
+@CrossOrigin
+@RequestMapping("/api/v1/management/role")
 public class RoleController {
 
 	@Autowired

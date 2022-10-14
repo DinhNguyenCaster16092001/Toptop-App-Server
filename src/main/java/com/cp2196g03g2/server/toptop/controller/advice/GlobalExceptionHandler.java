@@ -37,7 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		dto.setException(re.getClass().getSimpleName());
 		dto.setStatus("500");
 		dto.setErrorMessage(re.getMessage());
-
 		return new ResponseEntity<ErrorDto>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

@@ -6,9 +6,15 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.cp2196g03g2.server.toptop.dto.PagableObject;
+import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.TicketShop;
@@ -90,6 +96,33 @@ public class TicketShopServiceImpl implements ITicketShopService {
 			return TicketStatus.INACTIVE;
 		}
 	}
+
+	@Override
+	public PagableObject<TicketShop> findAllByPage(PagingRequest request) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(request.getSortBy()).ascending()
+                : Sort.by(request.getSortBy()).descending();
+	 
+	 	// create Pageable instance
+        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+        
+        boolean status = request.getIsActive() == 1 ? true : false;
+        
+        Page<TicketShop> tickkets = ticketShopRepository.findAllByPage(request.getKeyword(), pageable); 
+
+        List<TicketShop> listOfTicketShops = tickkets.getContent();
+        
+        PagableObject<TicketShop> tickShopPage = new PagableObject<>();
+        tickShopPage.setData(listOfTicketShops);
+        tickShopPage.setPageNo(request.getPageNo());
+        tickShopPage.setPageSize(request.getPageSize());
+        tickShopPage.setTotalElements(tickkets.getTotalElements());
+        tickShopPage.setTotalPages(tickkets.getTotalPages());
+        tickShopPage.setLast(tickkets.isLast());
+        
+        return tickShopPage;
+	}
+
+	
 	
 	
 

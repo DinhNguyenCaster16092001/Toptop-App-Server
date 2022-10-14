@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
+import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
@@ -126,25 +127,23 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public PagableObject<ApplicationUser> findAllByPage(int pageNo, int pageSize, 
-														String sortBy, String sortDir,
-														String keyword, int isActive) {
-		 Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-	                : Sort.by(sortBy).descending();
+	public PagableObject<ApplicationUser> findAllByPage(PagingRequest request) {
+		 Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(request.getSortBy()).ascending()
+	                : Sort.by(request.getSortBy()).descending();
 		 
-		// create Pageable instance
-	        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+		 	// create Pageable instance
+	        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 	        
-	        boolean status = isActive == 1 ? true : false;
+	        boolean status = request.getIsActive() == 1 ? true : false;
 	        
-	        Page<ApplicationUser> users = userRepository.findAllByPage(keyword, status, pageable); 
+	        Page<ApplicationUser> users = userRepository.findAllByPage(request.getKeyword(), status, pageable); 
 	
 	        List<ApplicationUser> listOfUsers = users.getContent();
 	        
 	        PagableObject<ApplicationUser> usersPage = new PagableObject<>();
 	        usersPage.setData(listOfUsers);
-	        usersPage.setPageNo(pageNo);
-	        usersPage.setPageSize(pageSize);
+	        usersPage.setPageNo(request.getPageNo());
+	        usersPage.setPageSize(request.getPageSize());
 	        usersPage.setTotalElements(users.getTotalElements());
 	        usersPage.setTotalPages(users.getTotalPages());
 	        usersPage.setLast(users.isLast());
