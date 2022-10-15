@@ -58,6 +58,7 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	}
 
 	@Override
+	@Transactional
 	public TicketShop save(TicketShopDto ticketShopDto) {
 		try {
 			ApplicationUser user = userRepository.findById(ticketShopDto.getUserid())
@@ -73,6 +74,7 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	}
 
 	@Override
+	@Transactional
 	public TicketShop updateStatusTicket(Integer status, Integer id) {
 		try {
 			TicketShop ticketShop = ticketShopRepository.findById(id).

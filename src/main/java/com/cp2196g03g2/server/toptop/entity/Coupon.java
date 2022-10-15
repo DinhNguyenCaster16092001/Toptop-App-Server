@@ -1,6 +1,5 @@
 package com.cp2196g03g2.server.toptop.entity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,10 +17,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name = "tbl_coupon")
-public class Coupon implements Serializable{
+@JsonIgnoreProperties("users")
+public class Coupon{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +34,14 @@ public class Coupon implements Serializable{
 	private String code;
 	
 	@Column(nullable = false)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
+	@JsonSerialize(as = Date.class)
 	private Date createdDate;
 
 	
 	@Column(name = "expired_at")
+	@JsonSerialize(as = Date.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date expiredAt;
 	
 	@Column(name = "quantity")
@@ -71,8 +78,18 @@ public class Coupon implements Serializable{
 		this.enable = enable;
 		this.value = value;
 	}
-
 	
+	
+	public Coupon(String code, Date createdDate, Date expiredAt, Integer qty, boolean enable, double value) {
+		this.code = code;
+		this.createdDate = createdDate;
+		this.expiredAt = expiredAt;
+		this.qty = qty;
+		this.enable = enable;
+		this.value = value;
+	}
+
+
 	public Coupon(String code, Date expiredAt, Integer qty, double value) {
 		this.code = code;
 		this.expiredAt = expiredAt;

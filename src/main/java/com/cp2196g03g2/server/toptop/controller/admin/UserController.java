@@ -35,16 +35,15 @@ public class UserController {
 
 	@GetMapping
 	public PagableObject<ApplicationUser> findAllByPage(
-            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
-            @RequestParam(value = "keyword", defaultValue = AppConstants.DEFAULT_KEYWORD, required = false) String keyword,
-            @RequestParam(value = "active", defaultValue = AppConstants.DEFAULT_STATUS, required = false) int status
-    ){
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@RequestParam(value = "keyword", defaultValue = AppConstants.DEFAULT_KEYWORD, required = false) String keyword,
+			@RequestParam(value = "active", defaultValue = AppConstants.DEFAULT_STATUS, required = false) int status) {
 		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir, keyword, status);
-        return  userService.findAllByPage(request);
-    }
+		return userService.findAllByPage(request);
+	}
 
 	@GetMapping("/{id}")
 	public ApplicationUser findById(@PathVariable String id) {
@@ -59,6 +58,11 @@ public class UserController {
 	@PutMapping("/{id}")
 	public ApplicationUser updateUser(@RequestBody UserDto userDto, @PathVariable String id) {
 		return userService.update(userDto, id);
+	}
+
+	@PutMapping("/{id}/active/{status}")
+	public void updateUser(@PathVariable(name = "id") String id, @PathVariable(name = "status") boolean status) {
+		userService.updateStatusUser(id, status);
 	}
 
 	@GetMapping("/alias")

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +25,8 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String>{
 												   "AND u.role.alias != 'Super Admin'")
 	Page<ApplicationUser> findAllByPage(@Param("keyword")String keyword, @Param("status")boolean isActive, Pageable pageable);
 	
+
+	@Query("UPDATE ApplicationUser u SET u.isActive = :status WHERE u.id = :id")
+	@Modifying
+	void updateStatusUser(@Param("id")String id, @Param("status")boolean status);
 }

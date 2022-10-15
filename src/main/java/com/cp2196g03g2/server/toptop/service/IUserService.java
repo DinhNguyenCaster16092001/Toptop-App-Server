@@ -17,4 +17,5 @@ public interface IUserService {
 	void delete(String id);
 	boolean findByAlias(ObjectKey objectKey);
 	boolean findByEmail(ObjectKey objectKey);
+	void updateStatusUser(String id, boolean status);
 }

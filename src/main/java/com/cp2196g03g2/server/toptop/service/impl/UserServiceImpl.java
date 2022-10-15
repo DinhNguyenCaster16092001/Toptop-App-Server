@@ -29,7 +29,7 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private IRoleRepository roleRepository;
-	
+
 	@Autowired
 	private IUserRepository userRepository;
 
@@ -45,8 +45,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	@Transactional
 	public ApplicationUser findById(String id) {
-		return userRepository.findById(id)
-				.orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
+		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
 	}
 
 	@Override
@@ -80,13 +79,14 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public ApplicationUser update(UserDto userDto, String id) {
 		try {
-			ApplicationUser userInDb = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
+			ApplicationUser userInDb = userRepository.findById(id)
+					.orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
 			userDto.setAlias(userDto.getAlias().toLowerCase());
 			userDto.setEmail(userInDb.getEmail());
-			userInDb = modelMapper.map(userDto, ApplicationUser.class); 
+			userInDb = modelMapper.map(userDto, ApplicationUser.class);
 			userInDb.setRole(roleRepository.findById(userDto.getRole()).get());
 			return userRepository.save(userInDb);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
 	}
@@ -128,29 +128,40 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public PagableObject<ApplicationUser> findAllByPage(PagingRequest request) {
-		 Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(request.getSortBy()).ascending()
-	                : Sort.by(request.getSortBy()).descending();
-		 
-		 	// create Pageable instance
-	        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
-	        
-	        boolean status = request.getIsActive() == 1 ? true : false;
-	        
-	        Page<ApplicationUser> users = userRepository.findAllByPage(request.getKeyword(), status, pageable); 
-	
-	        List<ApplicationUser> listOfUsers = users.getContent();
-	        
-	        PagableObject<ApplicationUser> usersPage = new PagableObject<>();
-	        usersPage.setData(listOfUsers);
-	        usersPage.setPageNo(request.getPageNo());
-	        usersPage.setPageSize(request.getPageSize());
-	        usersPage.setTotalElements(users.getTotalElements());
-	        usersPage.setTotalPages(users.getTotalPages());
-	        usersPage.setLast(users.isLast());
-	        
-	        return usersPage;
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		// create Pageable instance
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		boolean status = request.getIsActive() == 1 ? true : false;
+
+		Page<ApplicationUser> users = userRepository.findAllByPage(request.getKeyword(), status, pageable);
+
+		List<ApplicationUser> listOfUsers = users.getContent();
+
+		PagableObject<ApplicationUser> usersPage = new PagableObject<>();
+		usersPage.setData(listOfUsers);
+		usersPage.setPageNo(request.getPageNo());
+		usersPage.setPageSize(request.getPageSize());
+		usersPage.setTotalElements(users.getTotalElements());
+		usersPage.setTotalPages(users.getTotalPages());
+		usersPage.setLast(users.isLast());
+
+		return usersPage;
 	}
 
-	
+	@Override
+	@Transactional
+	public void updateStatusUser(String id, boolean status) {
+		try {
+			ApplicationUser user = userRepository.findById(id)
+					.orElseThrow(() -> new NotFoundException("Not Found User Have ID" + id));
+			userRepository.updateStatusUser(user.getId(), status);
+		} catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+	}
 
 }
