@@ -9,12 +9,13 @@ public class UserDto {
 	private String history;
 	private String alias;
 	private Long role;
+	private boolean active;
 	
 	public UserDto() {
 	}
 	
-
-	public UserDto(String id, String email, String fullName, String avatar, String history, String alias, Long role) {
+	public UserDto(String id, String email, String fullName, String avatar, String history, String alias, Long role,
+			boolean active) {
 		this.id = id;
 		this.email = email;
 		this.fullName = fullName;
@@ -22,7 +23,22 @@ public class UserDto {
 		this.history = history;
 		this.alias = alias;
 		this.role = role;
+		this.active = active;
 	}
+
+
+
+
+
+
+
+
+	public boolean isActive() {
+		return active;
+	}
+
+
+
 
 
 
@@ -83,6 +99,18 @@ public class UserDto {
 	public void setRole(Long role) {
 		this.role = role;
 	}
+	
+	
+
+	public boolean isStatus() {
+		return active;
+	}
+
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 
 	@Override
 	public String toString() {
