@@ -4,6 +4,7 @@ public class UserDto {
 
 	private String id;
 	private String email;
+	private String password;
 	private String fullName;
 	private String avatar;
 	private String history;
@@ -14,6 +15,17 @@ public class UserDto {
 	public UserDto() {
 	}
 	
+	public UserDto(String email, String password, String fullName, String avatar, String history, String alias,
+			Long role) {
+		this.email = email;
+		this.password = password;
+		this.fullName = fullName;
+		this.avatar = avatar;
+		this.history = history;
+		this.alias = alias;
+		this.role = role;
+	}
+
 	public UserDto(String id, String email, String fullName, String avatar, String history, String alias, Long role,
 			boolean active) {
 		this.id = id;
@@ -101,6 +113,22 @@ public class UserDto {
 	}
 	
 	
+	
+	
+
+	public String getPassword() {
+		return password;
+	}
+
+
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+
 
 	public boolean isStatus() {
 		return active;

@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
@@ -25,7 +33,7 @@ import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	@Autowired
 	private IRoleRepository roleRepository;
@@ -35,6 +43,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	@Transactional
@@ -59,6 +70,8 @@ public class UserServiceImpl implements IUserService {
 			}
 			ApplicationUser user = modelMapper.map(userDto, ApplicationUser.class);
 			user.setRole(roleRepository.findById(userDto.getRole()).get());
+			user.setActive(true);
+			user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 			return userRepository.save(user);
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -85,6 +98,7 @@ public class UserServiceImpl implements IUserService {
 			userDto.setEmail(userInDb.getEmail());
 			userInDb = modelMapper.map(userDto, ApplicationUser.class);
 			userInDb.setRole(roleRepository.findById(userDto.getRole()).get());
+			userInDb.setActive(true);
 			return userRepository.save(userInDb);
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -162,6 +176,17 @@ public class UserServiceImpl implements IUserService {
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		ApplicationUser user = userRepository.findByEmail(username);
+		if(user == null) {
+			throw new UsernameNotFoundException("cannot found user have email :" + username);
+		}
+		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+		return new User(user.getEmail(), user.getPassword(), authorities);
 	}
 
 }
