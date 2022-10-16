@@ -75,11 +75,12 @@ public class TicketShopServiceImpl implements ITicketShopService {
 
 	@Override
 	@Transactional
-	public TicketShop updateStatusTicket(Integer status, Integer id) {
+	public TicketShop updateStatusTicket(TicketShopDto dto) {
 		try {
-			TicketShop ticketShop = ticketShopRepository.findById(id).
-					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + id));
-			ticketShop.setStatus(convertIntToTicketStatus(status));
+			TicketShop ticketShop = ticketShopRepository.findById(dto.getId()).
+					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + dto.getId()));
+			ticketShop.setStatus(convertIntToTicketStatus(dto.getStatus()));
+			ticketShop.setReply(dto.getReply());
 			return ticketShopRepository.save(ticketShop);
 		}catch (Exception e) {
 			throw new InternalServerException(e.getMessage());

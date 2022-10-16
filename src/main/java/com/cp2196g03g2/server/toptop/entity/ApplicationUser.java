@@ -64,7 +64,7 @@ public class ApplicationUser {
 	private String history;
 	
 	@CreationTimestamp
-	@Column(name = "created_date",nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
+	@Column(name = "created_date",nullable = false, updatable = false)
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date createdDate;

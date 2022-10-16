@@ -55,9 +55,9 @@ public class UserController {
 		return userService.save(userDto);
 	}
 
-	@PutMapping("/{id}")
-	public ApplicationUser updateUser(@RequestBody UserDto userDto, @PathVariable String id) {
-		return userService.update(userDto, id);
+	@PutMapping
+	public ApplicationUser updateUser(@RequestBody UserDto userDto) {
+		return userService.update(userDto);
 	}
 
 	@PutMapping("/{id}/active/{status}")

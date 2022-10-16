@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
@@ -26,6 +27,9 @@ public class UserRepositoryTest {
 	@Autowired
 	private IRoleRepository roleRepository;
 	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+	
 	
 
 	
@@ -36,6 +40,20 @@ public class UserRepositoryTest {
 			System.out.println(applicationUser.getCreatedDate().toString());
 		}
 	
+	}
+	
+	
+	@Test
+	public void createUser() {
+		ApplicationUser user = new ApplicationUser();
+		user.setEmail("beie1981@yahoo.com");
+		user.setFullName("Shayne T Castillo");
+		user.setPassword(encoder.encode("123456789"));
+		user.setActive(true);
+		user.setAvatar("https://www.fakepersongenerator.com/Face/male/male1085409909576.jpg");
+		user.setRole(roleRepository.findById(1L).get());
+		
+		userRepository.save(user);
 	}
 	
 	/*

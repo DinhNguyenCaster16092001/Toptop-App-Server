@@ -12,6 +12,6 @@ public interface ITicketShopService {
 	TicketShop findById(Integer id);
 	List<TicketShop> findByUserId(String id);
 	TicketShop save(TicketShopDto ticketShopDto);
-	TicketShop updateStatusTicket(Integer status, Integer id);
+	TicketShop updateStatusTicket(TicketShopDto ticketShopDto);
 	PagableObject<TicketShop> findAllByPage(PagingRequest request);
 }

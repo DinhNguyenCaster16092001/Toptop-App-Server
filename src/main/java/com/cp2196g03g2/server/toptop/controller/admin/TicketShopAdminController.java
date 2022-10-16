@@ -26,7 +26,7 @@ import com.cp2196g03g2.server.toptop.service.ITicketShopService;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/management/ticketshop")
-public class TicketShopController {
+public class TicketShopAdminController {
 	
 	@Autowired
 	private ITicketShopService ticketShopService;
@@ -59,9 +59,9 @@ public class TicketShopController {
 		return ticketShopService.save(dto);
 	}
 	
-	@PutMapping("/{id}")
-	public TicketShop update(@RequestBody Integer status, @PathVariable Integer id) {
-		return ticketShopService.updateStatusTicket(status, id);
+	@PutMapping
+	public TicketShop update(@RequestBody TicketShopDto dto) {
+		return ticketShopService.updateStatusTicket(dto);
 	}
 
 }

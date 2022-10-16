@@ -25,6 +25,15 @@ public class UserDto {
 		this.alias = alias;
 		this.role = role;
 	}
+	
+	public UserDto(String id, String email, String fullName, String avatar, String history, String alias) {
+		this.id = id;
+		this.email = email;
+		this.fullName = fullName;
+		this.avatar = avatar;
+		this.history = history;
+		this.alias = alias;
+	}
 
 	public UserDto(String id, String email, String fullName, String avatar, String history, String alias, Long role,
 			boolean active) {
@@ -37,12 +46,6 @@ public class UserDto {
 		this.role = role;
 		this.active = active;
 	}
-
-
-
-
-
-
 
 
 	public boolean isActive() {

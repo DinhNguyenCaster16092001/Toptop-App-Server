@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +44,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -68,10 +69,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			} else {
 				userDto.setAlias(userDto.getAlias().toLowerCase());
 			}
-			ApplicationUser user = modelMapper.map(userDto, ApplicationUser.class);
-			user.setRole(roleRepository.findById(userDto.getRole()).get());
-			user.setActive(true);
+			ApplicationUser user = new ApplicationUser();
+			user.setEmail(userDto.getEmail());
+			user.setFullName(userDto.getFullName());
+			user.setAlias(userDto.getAlias());
 			user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+			user.setActive(userDto.isActive());
+			user.setAvatar(userDto.getAvatar());
+			user.setHistory(userDto.getHistory());
+			user.setRole(roleRepository.findById(userDto.getRole()).get());
 			return userRepository.save(user);
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -90,15 +96,20 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public ApplicationUser update(UserDto userDto, String id) {
+	public ApplicationUser update(UserDto userDto) {
 		try {
-			ApplicationUser userInDb = userRepository.findById(id)
-					.orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
-			userDto.setAlias(userDto.getAlias().toLowerCase());
-			userDto.setEmail(userInDb.getEmail());
-			userInDb = modelMapper.map(userDto, ApplicationUser.class);
-			userInDb.setRole(roleRepository.findById(userDto.getRole()).get());
-			userInDb.setActive(true);
+			ApplicationUser userInDb = userRepository.findById(userDto.getId())
+					.orElseThrow(() -> new NotFoundException("Cannot found user have id " + userDto.getId()));
+
+			if (userDto.getAlias() == null) {
+				userInDb.setAlias(userInDb.getAlias());
+			} else {
+				userInDb.setAlias(userDto.getAlias().toLowerCase());
+			}
+			userInDb.setPassword(userInDb.getPassword());
+			userInDb.setFullName(userDto.getFullName());
+			userInDb.setAvatar(userDto.getAvatar());
+			userInDb.setHistory(userDto.getHistory());
 			return userRepository.save(userInDb);
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -181,12 +192,16 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		ApplicationUser user = userRepository.findByEmail(username);
-		if(user == null) {
+		if (user == null) {
 			throw new UsernameNotFoundException("cannot found user have email :" + username);
+		} else {
+			if (user.isActive() == false) {
+				throw new AccessDeniedException("User is not active");
+			}
+			Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+			authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
+			return new User(user.getEmail(), user.getPassword(), authorities);
 		}
-		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
-		return new User(user.getEmail(), user.getPassword(), authorities);
 	}
 
 }
