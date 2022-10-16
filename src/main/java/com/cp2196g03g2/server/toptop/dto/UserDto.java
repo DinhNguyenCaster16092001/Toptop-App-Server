@@ -52,13 +52,6 @@ public class UserDto {
 		return active;
 	}
 
-
-
-
-
-
-
-
 	public String getId() {
 		return id;
 	}
