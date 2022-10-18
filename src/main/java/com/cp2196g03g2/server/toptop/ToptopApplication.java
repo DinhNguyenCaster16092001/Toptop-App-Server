@@ -34,9 +34,9 @@ public class ToptopApplication {
 		SpringApplication.run(ToptopApplication.class, args);
 	}
 	
-	@EventListener(ApplicationReadyEvent.class)
-	public void sendMail() {
-		emailService.sendMail("ndhdinha19059@cusc.ctu.edu.vn", "Hello", "Lmao");
-	}
+	/*
+	 * @EventListener(ApplicationReadyEvent.class) public void sendMail() {
+	 * emailService.sendMail("ndhdinha19059@cusc.ctu.edu.vn", "Hello", "Lmao"); }
+	 */
 
 }
