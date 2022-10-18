@@ -39,13 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		authenticationFilter.setFilterProcessesUrl("/api/v1/login");
 		
 		http.csrf().disable();
+		http.cors();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	/*	http.authorizeRequests().antMatchers("/api/v1/**").permitAll();
+		http.authorizeRequests().antMatchers("/api/v1/**").permitAll();
 		http.authorizeRequests().antMatchers("/api/v1/management/ticketshop/**").hasAnyAuthority("ROLE_TICKET_MODERATOR");
-		http.authorizeRequests().antMatchers("/api/v1/management/user/**").hasAnyAuthority("ROLE_SUPERADMIN");*/
+		http.authorizeRequests().antMatchers("/api/v1/management/user/**").hasAnyAuthority("ROLE_SUPERADMIN");
 		http.authorizeRequests().anyRequest().permitAll();
-		/*http.addFilter(authenticationFilter);
-		http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);*/
+		http.addFilter(authenticationFilter);
+		http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	@Override
