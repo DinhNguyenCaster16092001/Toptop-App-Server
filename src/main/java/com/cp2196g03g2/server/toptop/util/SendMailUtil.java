@@ -21,32 +21,7 @@ import freemarker.template.Template;
 @Component
 public class SendMailUtil {
 	
-	@Autowired
-	private JavaMailSender sender;
+
 	
-	@Autowired
-	private Configuration config;
 	
-	public void sendMail(MailRequest mailRequest) {
-		MimeMessage message = sender.createMimeMessage();
-		try {
-			// set mediaType
-			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-					StandardCharsets.UTF_8.name());
-			// add attachment
-
-			Map<String, Object> model = mailRequest.getModel();
-			Template t = config.getTemplate(mailRequest.getTemplate());
-			String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
-
-			helper.setTo(mailRequest.getTo());
-			helper.setText(html, true);
-			helper.setSubject(mailRequest.getSubject());
-			helper.setFrom(mailRequest.getFrom());
-			sender.send(message);
-
-		} catch (Exception e) {
-			throw new InternalServerException(e.getMessage());
-		}
-	}
 }
