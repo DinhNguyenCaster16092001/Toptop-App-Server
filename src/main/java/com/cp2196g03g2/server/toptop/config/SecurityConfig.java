@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.cp2196g03g2.server.toptop.security.AuthenticationFilter;
 import com.cp2196g03g2.server.toptop.security.AuthorizationFilter;
@@ -39,12 +40,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		authenticationFilter.setFilterProcessesUrl("/api/v1/login");
 		
 		http.csrf().disable();
-		http.cors();
+		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.authorizeRequests().antMatchers("/api/register/**").permitAll();
 		http.authorizeRequests().antMatchers("/api/v1/**").permitAll();
 		http.authorizeRequests().antMatchers("/api/v1/management/ticketshop/**").hasAnyAuthority("ROLE_TICKET_MODERATOR");
 		http.authorizeRequests().antMatchers("/api/v1/management/user/**").hasAnyAuthority("ROLE_SUPERADMIN");
-		http.authorizeRequests().anyRequest().permitAll();
+		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(authenticationFilter);
 		http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

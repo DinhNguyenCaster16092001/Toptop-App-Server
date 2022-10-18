@@ -203,5 +203,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			return new User(user.getEmail(), user.getPassword(), authorities);
 		}
 	}
+	
+
 
 }

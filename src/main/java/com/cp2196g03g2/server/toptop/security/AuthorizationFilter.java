@@ -26,16 +26,17 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AuthorizationFilter extends OncePerRequestFilter{
+public class AuthorizationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		if(request.getServletPath().equals("/api/v1/login")) {
+
+		if (request.getServletPath().equals("/api/v1/login") || request.getServletPath().contains("/api/v1/register")) {
 			filterChain.doFilter(request, response);
-		}else {
+		} else {
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-			if(authorizationHeader != null & authorizationHeader.startsWith("Bearer ")) {
+			if (authorizationHeader != null & authorizationHeader.startsWith("Bearer ")) {
 				try {
 					String token = authorizationHeader.substring("Bearer ".length());
 					Algorithm algorithm = Algorithm.HMAC256("%hDWZP9zs7Upjs7$cZI#ZwKP8IW69$".getBytes());
@@ -47,12 +48,12 @@ public class AuthorizationFilter extends OncePerRequestFilter{
 					Arrays.stream(roles).forEach(role -> {
 						authorities.add(new SimpleGrantedAuthority(role));
 					});
-					
-					UsernamePasswordAuthenticationToken authenticationToken = new 
-								UsernamePasswordAuthenticationToken(username, null, authorities);
+
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							username, null, authorities);
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 					filterChain.doFilter(request, response);
-				}catch (Exception e) {
+				} catch (Exception e) {
 					response.setHeader("error", e.getMessage());
 					response.setStatus(HttpStatus.FORBIDDEN.value());
 					Map<String, String> error = new HashMap<>();
@@ -60,11 +61,11 @@ public class AuthorizationFilter extends OncePerRequestFilter{
 					response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 					new ObjectMapper().writeValue(response.getOutputStream(), error);
 				}
-			}else {
+			} else {
 				filterChain.doFilter(request, response);
 			}
 		}
-		
+
 	}
 
 }
