@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cp2196g03g2.server.toptop.dto.OtpRequestDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.service.IUserService;
@@ -24,8 +25,12 @@ public class RegisterController {
 	
 	@PostMapping("register")
 	public ApplicationUser saveUser(@RequestBody UserDto userDto, HttpServletRequest request) {
-		System.out.println(request.getRequestURL().toString());
-		return userService.save(userDto);
+		return userService.saveCustomer(userDto);
+	}
+	
+	@PostMapping("register/otp")
+	public ApplicationUser verifyOtp(@RequestBody OtpRequestDto otpRequestDto) {
+		return userService.activeUserByOtpCode(otpRequestDto.getOtp(), otpRequestDto.getId());
 	}
 	
 

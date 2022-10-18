@@ -24,9 +24,9 @@
                   </div>
                   <div style="padding: 20px; background-color: rgb(255, 255, 255);">
                     <div style="color: rgb(0, 0, 0); text-align: left;">
-                      <h1 style="margin: 1rem 0">Verification code</h1>
-                      <p style="padding-bottom: 16px">Please use the verification code below to sign in.</p>
-                      <p style="padding-bottom: 16px"><strong style="font-size: 130%">764909</strong></p>
+                      <h1 style="margin: 1rem 0">Verification OTP code</h1>
+                      <p style="padding-bottom: 16px">Thank you for choosing Your Brand. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+                      <p style="padding-bottom: 16px"><strong style="font-size: 130%">${otp}</strong></p>
                       <p style="padding-bottom: 16px">If you didn’t request this, you can ignore this email.</p>
                       <p style="padding-bottom: 16px">Thanks,<br>The Orbit team</p>
                     </div>

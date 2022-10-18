@@ -1,10 +1,15 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -13,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +28,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import com.cp2196g03g2.server.toptop.dto.MailRequest;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
@@ -32,9 +41,22 @@ import com.cp2196g03g2.server.toptop.exception.NotFoundException;
 import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IUserService;
+import com.cp2196g03g2.server.toptop.util.GenerateUtils;
+import com.cp2196g03g2.server.toptop.util.SendMailUtil;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 @Service
 public class UserServiceImpl implements IUserService, UserDetailsService {
+
+	private static final long OTP_VALID_DURATION = 5 * 60 * 1000; // 5 minutes
+
+	@Autowired
+	private JavaMailSender sender;
+
+	@Autowired
+	private Configuration config;
 
 	@Autowired
 	private IRoleRepository roleRepository;
@@ -203,7 +225,102 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			return new User(user.getEmail(), user.getPassword(), authorities);
 		}
 	}
-	
 
+	@Override
+	public ApplicationUser saveCustomer(UserDto userDto) {
+		try {
+			if (userDto.getAlias() == null && userDto.getId() == null) {
+				userDto.setAlias(generateUserAlias(userDto.getFullName()));
+			} else {
+				userDto.setAlias(userDto.getAlias().toLowerCase());
+			}
+			ApplicationUser user = new ApplicationUser();
+			user.setEmail(userDto.getEmail());
+			user.setFullName(userDto.getFullName());
+			user.setAlias(userDto.getAlias());
+			user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+			user.setActive(userDto.isActive());
+			user.setAvatar(userDto.getAvatar());
+			user.setHistory(userDto.getHistory());
+			user.setRole(roleRepository.findById(userDto.getRole()).get());
+			String OTP = GenerateUtils.getRandomNumberString().toString();
+			user.setOTP(OTP);
+			user.setOtpRequestedTime(new Date());
+			ApplicationUser userSaved = userRepository.save(user);
+			sendOTPCodeToUser(userDto, OTP);
+			return userSaved;
+		} catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+	}
 
+	private void sendOTPCodeToUser(UserDto dto, String otp) {
+		try {
+			SendMailUtil mailUtil = new SendMailUtil();
+			HashMap<String, Object> modelMail = new HashMap<>();
+			modelMail.put("otp", otp);
+			MailRequest mailRequest = new MailRequest(dto.getEmail(), "ndhdinha19059@cusc.ctu.edu.vn",
+					"Verification OTP code", "email-template.ftl", modelMail);
+			sendMail(mailRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendMail(MailRequest mailRequest) {
+		MimeMessage message = sender.createMimeMessage();
+		try {
+			// set mediaType
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+					StandardCharsets.UTF_8.name());
+			// add attachment
+
+			Map<String, Object> model = mailRequest.getModel();
+			Template t = config.getTemplate(mailRequest.getTemplate());
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+
+			helper.setTo(mailRequest.getTo());
+			helper.setText(html, true);
+			helper.setSubject(mailRequest.getSubject());
+			helper.setFrom(mailRequest.getFrom());
+			sender.send(message);
+
+		} catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+	}
+
+	@Override
+	public ApplicationUser activeUserByOtpCode(String otpCode, String id) {
+		ApplicationUser user = userRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cannot found user have email: " + id));
+		if (checkingOTP(user, otpCode)) {
+			user.setActive(true);
+			user.setOTP(null);
+			user.setOtpRequestedTime(null);
+			return userRepository.save(user);
+		} else {
+			throw new InternalServerException("Invalid OTP Code");
+		}
+	}
+
+	public boolean checkingOTP(ApplicationUser user, String otpCode) {
+		if (user.getOTP() == null) {
+			return false;
+		}
+
+		if (!user.getOTP().equals(otpCode)) {
+			return false;
+		}
+
+		long currentTimeInMillis = System.currentTimeMillis();
+		long otpRequestedTimeInMillis = user.getOtpRequestedTime().getTime();
+
+		if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
+			// OTP expires
+			return false;
+		}
+
+		return true;
+	}
 }

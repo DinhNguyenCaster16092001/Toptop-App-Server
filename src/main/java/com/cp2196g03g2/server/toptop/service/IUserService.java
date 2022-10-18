@@ -13,7 +13,9 @@ public interface IUserService {
 	PagableObject<ApplicationUser> findAllByPage(PagingRequest request);
 	ApplicationUser findById(String id);
 	ApplicationUser save(UserDto userDto);
+	ApplicationUser saveCustomer(UserDto userDto);
 	ApplicationUser update(UserDto dto);
+	ApplicationUser activeUserByOtpCode(String otpCode, String email);
 	void delete(String id);
 	boolean findByAlias(ObjectKey objectKey);
 	boolean findByEmail(ObjectKey objectKey);
