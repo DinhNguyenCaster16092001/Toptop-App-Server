@@ -55,8 +55,8 @@ public class CouponController {
 		return couponService.save(coupon);
 	}
 	
-	@PutMapping("/{id}")
-	public Coupon save(@RequestBody CouponDTO couponDTO) {
+	@PutMapping
+	public Coupon update(@RequestBody CouponDTO couponDTO) {
 		return couponService.update(couponDTO);
 	}
 	
