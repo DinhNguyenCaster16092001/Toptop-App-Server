@@ -34,6 +34,7 @@ import com.cp2196g03g2.server.toptop.dto.MailRequest;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
+import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
@@ -247,20 +248,19 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			user.setOTP(OTP);
 			user.setOtpRequestedTime(new Date());
 			ApplicationUser userSaved = userRepository.save(user);
-			sendOTPCodeToUser(userDto, OTP);
+			sendOTPCodeToUser(userDto.getEmail(), OTP, "email-template.ftl", "Verification OTP code");
 			return userSaved;
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
 	}
 
-	private void sendOTPCodeToUser(UserDto dto, String otp) {
+	private void sendOTPCodeToUser(String email, String otp, String template, String subject) {
 		try {
-			SendMailUtil mailUtil = new SendMailUtil();
 			HashMap<String, Object> modelMail = new HashMap<>();
 			modelMail.put("otp", otp);
-			MailRequest mailRequest = new MailRequest(dto.getEmail(), "ndhdinha19059@cusc.ctu.edu.vn",
-					"Verification OTP code", "email-template.ftl", modelMail);
+			MailRequest mailRequest = new MailRequest(email, "ndhdinha19059@cusc.ctu.edu.vn",
+				subject	, template, modelMail);
 			sendMail(mailRequest);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -322,5 +322,40 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public ApplicationUser sendOtpCodeByEmail(String email) {
+		ApplicationUser user = userRepository.findByEmail(email);
+		if (user != null) {
+			String OTP = GenerateUtils.getRandomNumberString().toString();
+			user.setOTP(OTP);
+			user.setOtpRequestedTime(new Date());
+			sendOTPCodeToUser(email, OTP, "forgot-password.ftl","You have OTP Code to Reset your password");
+			return userRepository.save(user);
+		}else {
+			throw new NotFoundException("Cannot found user have email : " + email);
+		}
+	}
+
+	@Override
+	@Transactional
+	public ApplicationUser resetPassword(ResetPasswordDto dto) {
+		ApplicationUser user = userRepository
+				.findById(dto.getId()).orElseThrow(() ->new NotFoundException("Cannot found user have id" + dto.getId()));
+		user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+		return userRepository.save(user);
+	}
+
+	@Override
+	@Transactional
+	public ApplicationUser findByEmail(String email) {
+		ApplicationUser user = userRepository.findByEmail(email);
+		if(user == null) {
+			throw new NotFoundException("Cannot found user have email " + email);
+		}else {
+			return user;
+		}
+		
 	}
 }

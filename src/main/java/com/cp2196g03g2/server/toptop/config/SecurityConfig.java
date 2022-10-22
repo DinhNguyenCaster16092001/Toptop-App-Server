@@ -42,10 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.csrf().disable();
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/api/v1/register/**").permitAll();
+		http.authorizeRequests().antMatchers("/api/v1/account/**").permitAll();
 		http.authorizeRequests().antMatchers("/api/v1/management/coupon/**").hasAnyAuthority("ROLE_COUPON_MODERATOR");
 		http.authorizeRequests().antMatchers("/api/v1/management/ticketshop/**").hasAnyAuthority("ROLE_TICKET_MODERATOR");
 		http.authorizeRequests().antMatchers("/api/v1/management/user/**").hasAnyAuthority("ROLE_SUPERADMIN");
+		http.authorizeRequests().antMatchers("/api/v1/management/profile/**").authenticated();
 		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(authenticationFilter);
 		http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

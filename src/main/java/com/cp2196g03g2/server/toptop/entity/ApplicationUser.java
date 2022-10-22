@@ -94,6 +94,9 @@ public class ApplicationUser {
 	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Coupon> coupons;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL, mappedBy = "user")	
+	private List<Video> videos = new ArrayList<>();
+	
 	public ApplicationUser() {
 
 	}
@@ -231,6 +234,16 @@ public class ApplicationUser {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+	
+	
+	@JsonBackReference
+	public List<Video> getVideos() {
+		return videos;
+	}
+
+	public void setVideos(List<Video> videos) {
+		this.videos = videos;
 	}
 
 	public Date getCreatedDate() {
