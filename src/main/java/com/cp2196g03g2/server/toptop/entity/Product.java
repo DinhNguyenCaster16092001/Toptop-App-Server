@@ -44,12 +44,10 @@ public class Product {
 	
 	@Column 
 	private boolean enable;
-
+	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name = "user_id")
 	private ApplicationUser user;
-	
-	
 	
 	
 	public Product() {
@@ -151,6 +149,7 @@ public class Product {
 		this.enable = enable;
 	}
 	
+
 	public ApplicationUser getUser() {
 		return user;
 	}

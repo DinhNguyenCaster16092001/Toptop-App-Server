@@ -24,7 +24,7 @@ public class HashTag {
 	@Column(length = 225, nullable = false, unique = true)
 	private String name;
 	
-	@ManyToMany(mappedBy = "hashTags", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "hashTags", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
 	private List<Video> videos;
 
 	
@@ -67,6 +67,12 @@ public class HashTag {
 
 	public void setVideos(List<Video> videos) {
 		this.videos = videos;
+	}
+
+
+	@Override
+	public String toString() {
+		return "HashTag [id=" + id + ", name=" + name + ", videos=" + videos + "]";
 	}
 	
 	

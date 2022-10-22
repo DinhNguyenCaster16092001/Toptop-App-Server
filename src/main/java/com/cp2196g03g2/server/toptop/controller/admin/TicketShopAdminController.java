@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,18 +19,24 @@ import com.cp2196g03g2.server.toptop.constant.AppConstants;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
+import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Coupon;
 import com.cp2196g03g2.server.toptop.entity.TicketShop;
 import com.cp2196g03g2.server.toptop.repository.ITicketShopRepository;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
+import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/management/ticketshop")
+@PreAuthorize("hasAnyAuthority('ROLE_TICKET_MODERATOR')")
 public class TicketShopAdminController {
 	
 	@Autowired
 	private ITicketShopService ticketShopService;
+	
+	@Autowired
+	private IUserService userService;
 	
 	@GetMapping
 	public PagableObject<TicketShop> findAllByPage(
@@ -44,13 +51,13 @@ public class TicketShopAdminController {
 	}
 	
 	@GetMapping("/{id}")
-	public TicketShop findById(@PathVariable Integer id){
-		return ticketShopService.findById(id);
+	public ApplicationUser findById(@PathVariable String id){
+		return userService.findById(id);
 	}
 	
 	@GetMapping("/user/{userid}")
-	public List<TicketShop> findByUserId(@PathVariable String userid){
-		return ticketShopService.findByUserId(userid);
+	public ApplicationUser findByUserId(@PathVariable String userid){
+		return userService.findById(userid);
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.cp2196g03g2.server.toptop.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import com.cp2196g03g2.server.toptop.service.IUserService;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/management/user")
+@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN')")
 public class UserController {
 
 	@Autowired
@@ -76,6 +78,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN')")
 	public void deleteUser(@PathVariable String id) {
 		userService.delete(id);
 	}

@@ -19,6 +19,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "tbl_video")
 public class Video {
@@ -42,34 +44,50 @@ public class Video {
 	@Column(name = "status")
 	private boolean status;
 	
+	@Column(name = "view")
+	private long view;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
 	private ApplicationUser user;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinTable(
 			  name = "tbl_videos_hashtag", 
 			  joinColumns = @JoinColumn(name = "video_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
-	private Set<HashTag> hashTags = new HashSet<>();
+	private List<HashTag> hashTags = new ArrayList<>();
 
-	public Video(Long id, String title, String musicUrl, boolean enableComment, boolean status) {
+	public Video(Long id, String title, String url, String musicUrl,boolean enableComment, boolean status) {
 		this.id = id;
-		this.title = title;
-		this.musicUrl = musicUrl;
-		this.enableComment = enableComment;
-		this.status = status;
-	}
-
-	
-
-	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status) {
 		this.title = title;
 		this.url = url;
 		this.musicUrl = musicUrl;
 		this.enableComment = enableComment;
 		this.status = status;
 	}
+
+	
+
+	
+
+
+
+	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status, long view,
+			ApplicationUser user, List<HashTag> hashTags) {
+		this.title = title;
+		this.url = url;
+		this.musicUrl = musicUrl;
+		this.enableComment = enableComment;
+		this.status = status;
+		this.view = view;
+		this.user = user;
+		this.hashTags = hashTags;
+	}
+
+
+
+
 
 
 
@@ -126,6 +144,16 @@ public class Video {
 	}
 	
 	
+	public long getView() {
+		return view;
+	}
+
+
+	public void setView(long view) {
+		this.view = view;
+	}
+
+	
 	public ApplicationUser getUser() {
 		return user;
 	}
@@ -135,22 +163,22 @@ public class Video {
 		this.user = user;
 	}
 
-	
-	public Set<HashTag> getHashTags() {
+	@JsonBackReference
+	public List<HashTag> getHashTags() {
 		return hashTags;
 	}
 
 
-	public void setHashTags(Set<HashTag> hashTags) {
+	public void setHashTags(List<HashTag> hashTags) {
 		this.hashTags = hashTags;
 	}
-	
+
+
 	public void addHashTag(HashTag hashTag) {
 		this.hashTags.add(hashTag);
 	}
 
-
-
+	
 	@Override
 	public String toString() {
 		return "Video [id=" + id + ", title=" + title + ", musicUrl=" + musicUrl + ", enableComment=" + enableComment

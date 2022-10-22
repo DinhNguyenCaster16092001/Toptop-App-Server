@@ -1,7 +1,6 @@
-package com.cp2196g03g2.server.toptop.controller.admin;
+package com.cp2196g03g2.server.toptop.controller.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,14 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/v1/management/profile")
-@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_CONTENT_MODERATOR', "
-		+ "'ROLE_COUPON_MODERATOR', 'ROLE_TICKET_MODERATOR')")
-public class ProfileController {
+@RequestMapping("/api/v1/profile")
+public class ProfileCustomerController {
 
 	@Autowired
 	private IUserService userService;
