@@ -28,7 +28,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.cp2196g03g2.server.toptop.dto.MailRequest;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
@@ -43,10 +42,7 @@ import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 import com.cp2196g03g2.server.toptop.util.GenerateUtils;
-import com.cp2196g03g2.server.toptop.util.SendMailUtil;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 @Service
 public class UserServiceImpl implements IUserService, UserDetailsService {
@@ -55,9 +51,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	@Autowired
 	private JavaMailSender sender;
-
-	@Autowired
-	private Configuration config;
 
 	@Autowired
 	private IRoleRepository roleRepository;
@@ -248,47 +241,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			user.setOTP(OTP);
 			user.setOtpRequestedTime(new Date());
 			ApplicationUser userSaved = userRepository.save(user);
-			sendOTPCodeToUser(userDto.getEmail(), OTP, "email-template.ftl", "Verification OTP code");
 			return userSaved;
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
 	}
 
-	private void sendOTPCodeToUser(String email, String otp, String template, String subject) {
-		try {
-			HashMap<String, Object> modelMail = new HashMap<>();
-			modelMail.put("otp", otp);
-			MailRequest mailRequest = new MailRequest(email, "dinhcoix555@gmail.com",
-				subject	, template, modelMail);
-			sendMail(mailRequest);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-	public void sendMail(MailRequest mailRequest) {
-		MimeMessage message = sender.createMimeMessage();
-		try {
-			// set mediaType
-			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-					StandardCharsets.UTF_8.name());
-			// add attachment
-
-			Map<String, Object> model = mailRequest.getModel();
-			Template t = config.getTemplate(mailRequest.getTemplate());
-			String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
-
-			helper.setTo(mailRequest.getTo());
-			helper.setText(html, true);
-			helper.setSubject(mailRequest.getSubject());
-			helper.setFrom(mailRequest.getFrom());
-			sender.send(message);
-
-		} catch (Exception e) {
-			throw new InternalServerException(e.getMessage());
-		}
-	}
 
 	@Override
 	public ApplicationUser activeUserByOtpCode(String otpCode, String id) {
@@ -331,7 +290,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			String OTP = GenerateUtils.getRandomNumberString().toString();
 			user.setOTP(OTP);
 			user.setOtpRequestedTime(new Date());
-			sendOTPCodeToUser(email, OTP, "forgot-password.ftl","You have OTP Code to Reset your password");
 			return userRepository.save(user);
 		}else {
 			throw new NotFoundException("Cannot found user have email : " + email);

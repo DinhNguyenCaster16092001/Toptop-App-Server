@@ -46,8 +46,8 @@ public class TicketShopAdminController {
 	}
 	
 	@GetMapping("/{id}")
-	public ApplicationUser findById(@PathVariable String id){
-		return userService.findById(id);
+	public TicketShop findById(@PathVariable Integer id){
+		return ticketShopService.findById(id);
 	}
 	
 	@GetMapping("/user/{userid}")

@@ -35,8 +35,6 @@ import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IRoleService;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 @Service
 public class TicketShopServiceImpl implements ITicketShopService {
@@ -44,10 +42,6 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	@Autowired
 	private JavaMailSender sender;
 
-	@Autowired
-	private Configuration config;
-	
-	
 	@Autowired
 	private ITicketShopRepository ticketShopRepository;
 
@@ -110,8 +104,6 @@ public class TicketShopServiceImpl implements ITicketShopService {
 			ticketShop.setReply(dto.getReply());
 			user.setRole(roleRepository.findById(6L).get());
 			userRepository.save(user);
-			
-			sendMailToUser(user.getEmail(), user.getFullName(), "toptopshop-email.ftl", "Congrarulation");
 			return ticketShopRepository.save(ticketShop);
 		}catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -156,42 +148,6 @@ public class TicketShopServiceImpl implements ITicketShopService {
         return tickShopPage;
 	}
 
-	
-	public void sendMail(MailRequest mailRequest) {
-		MimeMessage message = sender.createMimeMessage();
-		try {
-			// set mediaType
-			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-					StandardCharsets.UTF_8.name());
-			// add attachment
-
-			Map<String, Object> model = mailRequest.getModel();
-			Template t = config.getTemplate(mailRequest.getTemplate());
-			String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
-
-			helper.setTo(mailRequest.getTo());
-			helper.setText(html, true);
-			helper.setSubject(mailRequest.getSubject());
-			helper.setFrom(mailRequest.getFrom());
-			sender.send(message);
-
-		} catch (Exception e) {
-			throw new InternalServerException(e.getMessage());
-		}
-	}
-	
-	
-	private void sendMailToUser(String email, String fullName,String template, String subject) {
-		try {
-			HashMap<String, Object> modelMail = new HashMap<>();
-			modelMail.put("fullName", fullName);
-			MailRequest mailRequest = new MailRequest(email, "dinhcoix555@gmail.com",
-				subject	, template, modelMail);
-			sendMail(mailRequest);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
 	
 

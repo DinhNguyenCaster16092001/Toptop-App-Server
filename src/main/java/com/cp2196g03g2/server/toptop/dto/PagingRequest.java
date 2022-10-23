@@ -24,7 +24,14 @@ public class PagingRequest {
 		this.isActive = isActive;
 	}
 	
-	
+
+	public PagingRequest(int pageNo, int pageSize, String keyword) {
+		this.pageNo = pageNo;
+		this.pageSize = pageSize;
+		this.keyword = keyword;
+	}
+
+
 	public PagingRequest(int pageNo, int pageSize, String sortBy, String sortDir, String keyword) {
 		this.pageNo = pageNo;
 		this.pageSize = pageSize;

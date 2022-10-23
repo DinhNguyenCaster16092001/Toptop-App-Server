@@ -20,7 +20,7 @@ public class CommentController {
 	@Autowired
 	private ICommentService commentService;
 	
-	@GetMapping("/{videoId}")
+	@GetMapping("/video/{videoId}")
 	public List<Comment> findAllCommentByVideoId(@PathVariable Long videoId){
 		return commentService.findAllParentCommentByVideoId(videoId);
 	}
