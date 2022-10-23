@@ -185,7 +185,7 @@ public class TicketShopServiceImpl implements ITicketShopService {
 		try {
 			HashMap<String, Object> modelMail = new HashMap<>();
 			modelMail.put("fullName", fullName);
-			MailRequest mailRequest = new MailRequest("dinhcoix555@gmail.com", "dinhcoix555@gmail.com",
+			MailRequest mailRequest = new MailRequest(email, "dinhcoix555@gmail.com",
 				subject	, template, modelMail);
 			sendMail(mailRequest);
 		} catch (Exception e) {

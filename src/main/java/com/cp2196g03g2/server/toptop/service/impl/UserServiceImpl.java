@@ -259,7 +259,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		try {
 			HashMap<String, Object> modelMail = new HashMap<>();
 			modelMail.put("otp", otp);
-			MailRequest mailRequest = new MailRequest(email, "ndhdinha19059@cusc.ctu.edu.vn",
+			MailRequest mailRequest = new MailRequest(email, "dinhcoix555@gmail.com",
 				subject	, template, modelMail);
 			sendMail(mailRequest);
 		} catch (Exception e) {
