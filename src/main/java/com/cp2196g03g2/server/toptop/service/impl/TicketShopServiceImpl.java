@@ -1,7 +1,11 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -11,8 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import com.cp2196g03g2.server.toptop.dto.MailRequest;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
@@ -21,18 +29,33 @@ import com.cp2196g03g2.server.toptop.entity.TicketShop;
 import com.cp2196g03g2.server.toptop.enums.TicketStatus;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
+import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.ITicketShopRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
+import com.cp2196g03g2.server.toptop.service.IRoleService;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 @Service
 public class TicketShopServiceImpl implements ITicketShopService {
 
 	@Autowired
+	private JavaMailSender sender;
+
+	@Autowired
+	private Configuration config;
+	
+	
+	@Autowired
 	private ITicketShopRepository ticketShopRepository;
 
 	@Autowired
 	private IUserRepository userRepository;
+	
+	@Autowired
+	private IRoleRepository roleRepository;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -77,10 +100,18 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	@Transactional
 	public TicketShop updateStatusTicket(TicketShopDto dto) {
 		try {
+			
 			TicketShop ticketShop = ticketShopRepository.findById(dto.getId()).
 					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + dto.getId()));
+			
+			ApplicationUser user = userRepository.findById(ticketShop.getUser().getId()).get();
+			
 			ticketShop.setStatus(convertIntToTicketStatus(dto.getStatus()));
 			ticketShop.setReply(dto.getReply());
+			user.setRole(roleRepository.findById(6L).get());
+			userRepository.save(user);
+			
+			sendMailToUser(user.getEmail(), user.getFullName(), "toptopshop-email.ftl", "Congrarulation");
 			return ticketShopRepository.save(ticketShop);
 		}catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -126,7 +157,42 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	}
 
 	
+	public void sendMail(MailRequest mailRequest) {
+		MimeMessage message = sender.createMimeMessage();
+		try {
+			// set mediaType
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+					StandardCharsets.UTF_8.name());
+			// add attachment
+
+			Map<String, Object> model = mailRequest.getModel();
+			Template t = config.getTemplate(mailRequest.getTemplate());
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+
+			helper.setTo(mailRequest.getTo());
+			helper.setText(html, true);
+			helper.setSubject(mailRequest.getSubject());
+			helper.setFrom(mailRequest.getFrom());
+			sender.send(message);
+
+		} catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+	}
 	
+	
+	private void sendMailToUser(String email, String fullName,String template, String subject) {
+		try {
+			HashMap<String, Object> modelMail = new HashMap<>();
+			modelMail.put("fullName", fullName);
+			MailRequest mailRequest = new MailRequest("dinhcoix555@gmail.com", "dinhcoix555@gmail.com",
+				subject	, template, modelMail);
+			sendMail(mailRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
 	
 
-}
+

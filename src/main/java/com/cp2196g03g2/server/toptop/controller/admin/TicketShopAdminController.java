@@ -1,9 +1,6 @@
 package com.cp2196g03g2.server.toptop.controller.admin;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +17,14 @@ import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
-import com.cp2196g03g2.server.toptop.entity.Coupon;
 import com.cp2196g03g2.server.toptop.entity.TicketShop;
-import com.cp2196g03g2.server.toptop.repository.ITicketShopRepository;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/management/ticketshop")
-@PreAuthorize("hasAnyAuthority('ROLE_TICKET_MODERATOR')")
+@PreAuthorize("hasAnyAuthority('ROLE_TICKET_MODERATOR', 'ROLE_SUPERADMIN')")
 public class TicketShopAdminController {
 	
 	@Autowired

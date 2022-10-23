@@ -31,7 +31,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
 	private String[] URL = {"/api/v1/login", 
 							"/api/v1/account",
-							"/api/v1/video/watch"};
+							"/api/v1/video/watch",
+							"/api/v1/comment/video"};
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

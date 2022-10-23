@@ -18,7 +18,7 @@ import com.cp2196g03g2.server.toptop.service.IUserService;
 @RestController
 @RequestMapping("/api/v1/management/profile")
 @PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN', 'ROLE_CONTENT_MODERATOR', "
-		+ "'ROLE_COUPON_MODERATOR', 'ROLE_TICKET_MODERATOR')")
+		+ "'ROLE_COUPON_MODERATOR', 'ROLE_TICKET_MODERATOR', 'ROLE_SUPERADMIN')")
 public class ProfileController {
 
 	@Autowired

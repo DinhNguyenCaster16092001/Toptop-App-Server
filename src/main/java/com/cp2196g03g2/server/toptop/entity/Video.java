@@ -58,6 +58,11 @@ public class Video {
 			  inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
 	private List<HashTag> hashTags = new ArrayList<>();
 
+	
+	public Video() {
+	}
+
+
 	public Video(Long id, String title, String url, String musicUrl,boolean enableComment, boolean status) {
 		this.id = id;
 		this.title = title;

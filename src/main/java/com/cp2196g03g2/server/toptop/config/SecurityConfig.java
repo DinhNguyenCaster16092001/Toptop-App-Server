@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests().antMatchers("/api/v1/account/**").permitAll()
-			.anyRequest().authenticated();
+								.anyRequest().authenticated();
 		/*
 		 * http.authorizeRequests().antMatchers("/api/v1/account/**").permitAll().
 		 * antMatchers("/api/v1/video/watch/**")
@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**");
+		web.ignoring().antMatchers("/api/v1/comment/**");
 	}
 
 }
