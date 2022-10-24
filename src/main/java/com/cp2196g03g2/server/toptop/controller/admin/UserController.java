@@ -18,6 +18,7 @@ import com.cp2196g03g2.server.toptop.dto.BooleanResult;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
+import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.service.IUserService;
@@ -81,6 +82,11 @@ public class UserController {
 	@PreAuthorize("hasAnyAuthority('ROLE_SUPERADMIN')")
 	public void deleteUser(@PathVariable String id) {
 		userService.delete(id);
+	}
+	
+	@PutMapping("/password/reset")
+	public ApplicationUser resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+		return userService.resetPassword(resetPasswordDto);
 	}
 
 }
