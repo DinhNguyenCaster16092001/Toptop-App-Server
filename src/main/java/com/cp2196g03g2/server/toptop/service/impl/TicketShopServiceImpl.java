@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -96,14 +97,9 @@ public class TicketShopServiceImpl implements ITicketShopService {
 		try {
 			
 			TicketShop ticketShop = ticketShopRepository.findById(dto.getId()).
-					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + dto.getId()));
-			
-			ApplicationUser user = userRepository.findById(ticketShop.getUser().getId()).get();
-			
+					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + dto.getId()));	
 			ticketShop.setStatus(convertIntToTicketStatus(dto.getStatus()));
 			ticketShop.setReply(dto.getReply());
-			user.setRole(roleRepository.findById(6L).get());
-			userRepository.save(user);
 			return ticketShopRepository.save(ticketShop);
 		}catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
@@ -147,6 +143,7 @@ public class TicketShopServiceImpl implements ITicketShopService {
         
         return tickShopPage;
 	}
+	
 
 }
 	

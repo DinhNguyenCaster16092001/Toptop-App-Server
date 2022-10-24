@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.controller.admin;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,8 +20,12 @@ import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.TicketShop;
+import com.cp2196g03g2.server.toptop.enums.TicketStatus;
+import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
+import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
 import com.cp2196g03g2.server.toptop.service.IUserService;
+import com.cp2196g03g2.server.toptop.service.impl.EmailServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -32,6 +38,16 @@ public class TicketShopAdminController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	
+	@Autowired
+	private IUserRepository userRepository;
+	
+	@Autowired
+	private IRoleRepository roleRepository;
+	
+	@Autowired
+	private EmailServiceImpl emailServiceImpl;
 	
 	@GetMapping
 	public PagableObject<TicketShop> findAllByPage(
@@ -63,7 +79,17 @@ public class TicketShopAdminController {
 	
 	@PutMapping
 	public TicketShop update(@RequestBody TicketShopDto dto) {
-		return ticketShopService.updateStatusTicket(dto);
+		
+		TicketShop ticketUpdate = ticketShopService.updateStatusTicket(dto);
+		if(ticketUpdate.getStatus().equals(TicketStatus.ACTIVE)) {
+			ApplicationUser user = userRepository.findById(ticketUpdate.getUser().getId()).get();
+			user.setRole(roleRepository.findById(6L).get());
+			HashMap<String, Object> model = new HashMap<>();
+			model.put("name", user.getFullName());
+			model.put("project_name", ticketUpdate.getContent());
+			emailServiceImpl.sendMail(user.getEmail(), "Congragulation", "ticket-enable", model);
+		}
+		return ticketUpdate;
 	}
 
 }
