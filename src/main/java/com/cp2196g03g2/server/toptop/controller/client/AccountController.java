@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.controller.client;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +20,7 @@ import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.service.IUserService;
+import com.cp2196g03g2.server.toptop.service.impl.EmailServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -27,9 +30,18 @@ public class AccountController {
 	@Autowired
 	private IUserService userService;
 	
+	@Autowired
+	private EmailServiceImpl emailServiceImpl;
+	
 	@PostMapping
 	public ApplicationUser saveUser(@RequestBody UserDto userDto, HttpServletRequest request) {
-		return userService.saveCustomer(userDto);
+		ApplicationUser user = userService.saveCustomer(userDto);
+		if(user != null) {
+			HashMap<String, Object> model = new HashMap<>();
+			model.put("otp", user.getOTP());
+			emailServiceImpl.sendMail(user.getEmail(), "OTP Code", "otp-code", model);
+		}
+		return user;
 	}
 	
 	@PutMapping("/otp")
@@ -40,7 +52,13 @@ public class AccountController {
 	
 	@GetMapping("/forgotPassword/{email}")
 	public ApplicationUser forgotPassword(@PathVariable String email) {
-		return userService.sendOtpCodeByEmail(email);
+		ApplicationUser user = userService.sendOtpCodeByEmail(email);
+		if(user != null) {
+			HashMap<String, Object> model = new HashMap<>();
+			model.put("otp", user.getOTP());
+			emailServiceImpl.sendMail(user.getEmail(), "OTP Code", "otp-code", model);
+		}
+		return user;
 	}
 	
 	@PutMapping("/password/reset")

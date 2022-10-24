@@ -43,7 +43,7 @@ public class EmailServiceImpl {
 		Context context = new Context();
 		context.setVariables(model);
 		helper.setFrom("dinhcoix555@gmail.com");
-		helper.setTo("dinhcoix555@gmail.com");
+		helper.setTo(to);
 		helper.setSubject(subject);
 		String html = templateEngine.process(template, context);
 		helper.setText(html, true);
