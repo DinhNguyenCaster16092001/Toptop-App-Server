@@ -47,6 +47,9 @@ public class Video {
 	@Column(name = "view")
 	private long view;
 	
+	@Column(name = "heart")
+	private long heart;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
 	private ApplicationUser user;
@@ -75,25 +78,38 @@ public class Video {
 	
 
 	
-
+	
+	
+	
 
 
 	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status, long view,
-			ApplicationUser user, List<HashTag> hashTags) {
+			long heart, ApplicationUser user, List<HashTag> hashTags) {
 		this.title = title;
 		this.url = url;
 		this.musicUrl = musicUrl;
 		this.enableComment = enableComment;
 		this.status = status;
 		this.view = view;
+		this.heart = heart;
 		this.user = user;
 		this.hashTags = hashTags;
 	}
 
 
-
-
-
+	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, long view,
+			long heart, ApplicationUser user, List<HashTag> hashTags) {
+		this.id = id;
+		this.title = title;
+		this.url = url;
+		this.musicUrl = musicUrl;
+		this.enableComment = enableComment;
+		this.status = status;
+		this.view = view;
+		this.heart = heart;
+		this.user = user;
+		this.hashTags = hashTags;
+	}
 
 
 	public Long getId() {
@@ -183,11 +199,23 @@ public class Video {
 		this.hashTags.add(hashTag);
 	}
 
-	
+
+	public long getHeart() {
+		return heart;
+	}
+
+
+	public void setHeart(long heart) {
+		this.heart = heart;
+	}
+
+
 	@Override
 	public String toString() {
-		return "Video [id=" + id + ", title=" + title + ", musicUrl=" + musicUrl + ", enableComment=" + enableComment
-				+ ", status=" + status + "]";
+		return "Video [id=" + id + ", title=" + title + ", url=" + url + ", musicUrl=" + musicUrl + ", enableComment="
+				+ enableComment + ", status=" + status + ", view=" + view + ", heart=" + heart + ", user=" + user
+				+ ", hashTags=" + hashTags + "]";
 	}
-	
+
+
 }

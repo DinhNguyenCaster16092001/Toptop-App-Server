@@ -48,6 +48,11 @@ public class VideoController {
 		return videoService.updateViewVideo(id);
 	}
 	
+	@PutMapping("/watch/heart/{id}")
+	public Video updateHeartVideo(@PathVariable Long id) {
+		return videoService.updateHeartVideo(id);
+	}
+	
 	
 	@PostMapping("/interactive")
 	@PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_SHOP_USER')")

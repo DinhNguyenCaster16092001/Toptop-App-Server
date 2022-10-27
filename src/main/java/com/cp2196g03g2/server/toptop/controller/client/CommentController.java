@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cp2196g03g2.server.toptop.dto.CommentDto;
 import com.cp2196g03g2.server.toptop.entity.Comment;
 import com.cp2196g03g2.server.toptop.service.ICommentService;
 
@@ -23,6 +25,11 @@ public class CommentController {
 	@GetMapping("/video/{videoId}")
 	public List<Comment> findAllCommentByVideoId(@PathVariable Long videoId){
 		return commentService.findAllParentCommentByVideoId(videoId);
+	}
+	
+	@PostMapping
+	public Comment saveComment(CommentDto dto) {
+		return commentService.save(dto);
 	}
 
 }

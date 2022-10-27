@@ -69,10 +69,11 @@ public class ApplicationUser {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date createdDate;
 	
-	
+	@JsonIgnore
 	@Column(name = "one_time_password")
 	private String OTP;
 	
+	@JsonIgnore
 	@Column(name = "otp_requested_time")
 	private Date otpRequestedTime;
 	

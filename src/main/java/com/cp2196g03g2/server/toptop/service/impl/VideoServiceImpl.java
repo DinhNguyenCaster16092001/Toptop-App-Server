@@ -42,7 +42,7 @@ public class VideoServiceImpl implements IVideoService {
 
 	@Autowired
 	private IReportVideoRepository reportVideoRepository;
-	
+
 	@Override
 	@Transactional
 	public Video save(VideoDto videoDto) {
@@ -70,8 +70,8 @@ public class VideoServiceImpl implements IVideoService {
 						.orElseThrow(()-> new NotFoundException("Cannot found user have id" + videoDto.getUserid()));
 				Video video = new Video(videoDto.getTitle(),
 						videoDto.getVideoUrl(), 
-						videoDto.getMusic(), videoDto.isEnableComment(), true, 
-						0, user, hashTags);
+						videoDto.getMusic(), videoDto.isEnableComment(), 
+						true,0,0,user, hashTags);
 
 				//save video into database
 				return videoRepository.save(video);
@@ -86,12 +86,11 @@ public class VideoServiceImpl implements IVideoService {
 		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
 				? Sort.by(request.getSortBy()).ascending()
 				: Sort.by(request.getSortBy()).descending();
-		
-		
+
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
-		
+
 		Page<Video> videos = videoRepository.findAllVideoByPage(pageable, request.getKeyword());
-	
+
 		List<Video> listOfVideos = videos.getContent();
 
 		PagableObject<Video> videoPage = new PagableObject<>();
@@ -101,8 +100,8 @@ public class VideoServiceImpl implements IVideoService {
 		videoPage.setTotalElements(videoPage.getTotalElements());
 		videoPage.setTotalPages(videoPage.getTotalPages());
 		videoPage.setLast(videoPage.isLast());
-		
-		return videoPage; 
+
+		return videoPage;
 	}
 
 	@Override
@@ -114,13 +113,21 @@ public class VideoServiceImpl implements IVideoService {
 		video.setView(currentView + 1);
 		return videoRepository.save(video);
 	}
+	
+	@Override
+	@Transactional
+	public Video updateHeartVideo(Long id) {
+		Video video = videoRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+		Long currentHeart = video.getHeart();
+		video.setView(currentHeart + 1);
+		return videoRepository.save(video);
+	}
 
 	@Override
 	@Transactional
 	public Video findById(Long id) {
 		return videoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
 	}
-
-	
 
 }
