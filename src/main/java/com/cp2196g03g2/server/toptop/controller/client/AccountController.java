@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cp2196g03g2.server.toptop.dto.BooleanResult;
+import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.OtpRequestDto;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
@@ -47,6 +49,16 @@ public class AccountController {
 	@PutMapping("/otp")
 	public ApplicationUser verifyOtp(@RequestBody OtpRequestDto otpRequestDto) {
 		return userService.activeUserByOtpCode(otpRequestDto.getOtp(), otpRequestDto.getId());
+	}
+	
+	@GetMapping("/alias")
+	public BooleanResult existAlias(@RequestBody ObjectKey objectKey) {
+		return new BooleanResult(userService.findByAlias(objectKey));
+	}
+
+	@GetMapping("/email")
+	public BooleanResult existEmail(@RequestBody ObjectKey objectKey) {
+		return new BooleanResult(userService.findByEmail(objectKey));
 	}
 	
 	

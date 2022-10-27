@@ -10,9 +10,9 @@ import com.cp2196g03g2.server.toptop.entity.Video;
 
 public interface IVideoRepository extends JpaRepository<Video, Long> {
 	
-	@Query("SELECT v FROM Video v JOIN v.hashTags h WHERE (v.title LIKE %:keyword% OR " + 
+	@Query("SELECT v FROM Video v LEFT JOIN v.hashTags h WHERE (v.title LIKE %:keyword% OR " + 
 															   "v.user.fullName LIKE %:keyword% OR "  + 
 															   "h.name LIKE %:keyword%) " +
-															   "GROUP BY h.name")
+															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
 }

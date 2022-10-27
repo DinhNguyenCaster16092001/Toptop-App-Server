@@ -14,13 +14,16 @@ import org.springframework.stereotype.Service;
 
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
+import com.cp2196g03g2.server.toptop.dto.ReportVideoDto;
 import com.cp2196g03g2.server.toptop.dto.VideoDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.HashTag;
+import com.cp2196g03g2.server.toptop.entity.ReportVideo;
 import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
 import com.cp2196g03g2.server.toptop.repository.IHashTagRepository;
+import com.cp2196g03g2.server.toptop.repository.IReportVideoRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.repository.IVideoRepository;
 import com.cp2196g03g2.server.toptop.service.IVideoService;
@@ -37,6 +40,9 @@ public class VideoServiceImpl implements IVideoService {
 	@Autowired
 	private IVideoRepository videoRepository;
 
+	@Autowired
+	private IReportVideoRepository reportVideoRepository;
+	
 	@Override
 	@Transactional
 	public Video save(VideoDto videoDto) {
@@ -98,5 +104,23 @@ public class VideoServiceImpl implements IVideoService {
 		
 		return videoPage; 
 	}
+
+	@Override
+	@Transactional
+	public Video updateViewVideo(Long id) {
+		Video video = videoRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+		Long currentView = video.getView();
+		video.setView(currentView + 1);
+		return videoRepository.save(video);
+	}
+
+	@Override
+	@Transactional
+	public Video findById(Long id) {
+		return videoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+	}
+
+	
 
 }
