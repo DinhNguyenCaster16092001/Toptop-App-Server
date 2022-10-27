@@ -69,12 +69,14 @@ public class UserController {
 	}
 
 	@GetMapping("/alias")
-	public BooleanResult existAlias(@RequestBody ObjectKey objectKey) {
+	public BooleanResult existAlias(@RequestParam(value = "target", required = true) String alias, @RequestParam(value = "id", required = false) String id) {
+		ObjectKey objectKey = new ObjectKey(alias, id);
 		return new BooleanResult(userService.findByAlias(objectKey));
 	}
 
 	@GetMapping("/email")
-	public BooleanResult existEmail(@RequestBody ObjectKey objectKey) {
+	public BooleanResult existEmail(@RequestParam(value = "target", required = true) String email, @RequestParam(value = "id", required = false) String id) {
+		ObjectKey objectKey = new ObjectKey(email, id);
 		return new BooleanResult(userService.findByEmail(objectKey));
 	}
 

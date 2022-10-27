@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cp2196g03g2.server.toptop.dto.BooleanResult;
@@ -52,12 +53,14 @@ public class AccountController {
 	}
 	
 	@GetMapping("/alias")
-	public BooleanResult existAlias(@RequestBody ObjectKey objectKey) {
+	public BooleanResult existAlias(@RequestParam(value = "target", required = true) String alias, @RequestParam(value = "id", required = false) String id) {
+		ObjectKey objectKey = new ObjectKey(alias, id);
 		return new BooleanResult(userService.findByAlias(objectKey));
 	}
 
 	@GetMapping("/email")
-	public BooleanResult existEmail(@RequestBody ObjectKey objectKey) {
+	public BooleanResult existEmail(@RequestParam(value = "target", required = true) String email, @RequestParam(value = "id", required = false) String id) {
+		ObjectKey objectKey = new ObjectKey(email, id);
 		return new BooleanResult(userService.findByEmail(objectKey));
 	}
 	
