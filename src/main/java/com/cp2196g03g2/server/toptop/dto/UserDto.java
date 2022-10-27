@@ -26,6 +26,16 @@ public class UserDto {
 		this.role = role;
 	}
 	
+	
+	public UserDto(String email, String fullName, String avatar, String alias,
+			Long role) {
+		this.email = email;
+		this.fullName = fullName;
+		this.avatar = avatar;
+		this.alias = alias;
+		this.role = role;
+	}
+	
 	public UserDto(String id, String email, String fullName, String avatar, String history, String alias) {
 		this.id = id;
 		this.email = email;

@@ -24,4 +24,5 @@ public interface IUserService {
 	boolean findByAlias(ObjectKey objectKey);
 	boolean findByEmail(ObjectKey objectKey);
 	void updateStatusUser(String id, boolean status);
+	ApplicationUser loginOrRegisterSocial(UserDto userDto);
 }

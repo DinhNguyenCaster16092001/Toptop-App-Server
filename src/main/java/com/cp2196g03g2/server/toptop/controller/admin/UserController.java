@@ -90,5 +90,7 @@ public class UserController {
 	public ApplicationUser resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
 		return userService.resetPassword(resetPasswordDto);
 	}
+	
+	
 
 }

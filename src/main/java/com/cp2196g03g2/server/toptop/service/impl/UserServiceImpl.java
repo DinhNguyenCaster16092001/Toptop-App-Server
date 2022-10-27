@@ -316,4 +316,29 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		}
 		
 	}
+
+	@Override
+	public ApplicationUser loginOrRegisterSocial(UserDto userDto) {
+		try {
+			ApplicationUser userSocial = userRepository.findByEmail(userDto.getEmail());
+			if(userSocial != null) {
+				return userSocial;
+			}
+			if (userDto.getAlias() == null && userDto.getId() == null) {
+				userDto.setAlias(generateUserAlias(userDto.getFullName()));
+			} else {
+				userDto.setAlias(userDto.getAlias().toLowerCase());
+			}
+			ApplicationUser user = new ApplicationUser();
+			user.setEmail(userDto.getEmail());
+			user.setFullName(userDto.getFullName());
+			user.setAlias(userDto.getAlias());
+			user.setActive(userDto.isActive());
+			user.setAvatar(userDto.getAvatar());
+			user.setRole(roleRepository.findById(userDto.getRole()).get());
+			return userRepository.save(user);
+		}catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+	}
 }
