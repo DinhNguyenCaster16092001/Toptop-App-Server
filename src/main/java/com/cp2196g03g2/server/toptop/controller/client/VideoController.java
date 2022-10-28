@@ -43,6 +43,12 @@ public class VideoController {
 	}
 	
 	
+
+	@GetMapping("/watch/{id}")
+	public Video findVideoById(@PathVariable Long id) {
+		return videoService.findById(id);
+	}
+	
 	@PutMapping("/watch/{id}")
 	public Video updateViewVideo(@PathVariable Long id) {
 		return videoService.updateViewVideo(id);

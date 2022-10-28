@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.config;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
 		corsConfig.addAllowedMethod(HttpMethod.DELETE);
 		corsConfig.addAllowedMethod(HttpMethod.PUT);
-		
 		http.csrf().disable();
 		http.cors().configurationSource(request -> corsConfig);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -83,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/api/v1/video/watch/**");
 		web.ignoring().antMatchers("/api/v1/account/**");
 		web.ignoring().antMatchers("/api/v1/hashtag/**");
+		web.ignoring().antMatchers("/api/v1/friendship/**");
 	}
 
 }

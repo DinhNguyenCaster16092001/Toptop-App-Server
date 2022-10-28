@@ -45,10 +45,10 @@ public class Video {
 	private boolean status;
 	
 	@Column(name = "view")
-	private long view;
+	private Long view;
 	
 	@Column(name = "heart")
-	private long heart;
+	private Long heart;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
@@ -83,8 +83,8 @@ public class Video {
 	
 
 
-	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status, long view,
-			long heart, ApplicationUser user, List<HashTag> hashTags) {
+	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
+			Long heart, ApplicationUser user, List<HashTag> hashTags) {
 		this.title = title;
 		this.url = url;
 		this.musicUrl = musicUrl;
@@ -97,8 +97,8 @@ public class Video {
 	}
 
 
-	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, long view,
-			long heart, ApplicationUser user, List<HashTag> hashTags) {
+	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
+			Long heart, ApplicationUser user, List<HashTag> hashTags) {
 		this.id = id;
 		this.title = title;
 		this.url = url;
@@ -165,12 +165,12 @@ public class Video {
 	}
 	
 	
-	public long getView() {
+	public Long getView() {
 		return view;
 	}
 
 
-	public void setView(long view) {
+	public void setView(Long view) {
 		this.view = view;
 	}
 
@@ -200,12 +200,12 @@ public class Video {
 	}
 
 
-	public long getHeart() {
+	public Long getHeart() {
 		return heart;
 	}
 
 
-	public void setHeart(long heart) {
+	public void setHeart(Long heart) {
 		this.heart = heart;
 	}
 

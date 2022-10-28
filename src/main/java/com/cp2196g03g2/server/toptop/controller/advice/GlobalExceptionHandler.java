@@ -1,10 +1,12 @@
 package com.cp2196g03g2.server.toptop.controller.advice;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -47,7 +49,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		dto.setException(ex.getClass().getSimpleName());
 		dto.setStatus("403");
 		dto.setErrorMessage(ex.getMessage());
-
 		return new ResponseEntity<ErrorDto>(dto, HttpStatus.FORBIDDEN);
 	}
 
@@ -60,5 +61,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		dto.setErrorMessage(ex.getMessage());
 		return new ResponseEntity<ErrorDto>(dto, HttpStatus.BAD_GATEWAY);
 	}
-
 }

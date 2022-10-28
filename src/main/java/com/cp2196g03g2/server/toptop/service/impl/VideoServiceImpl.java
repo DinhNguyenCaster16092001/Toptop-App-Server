@@ -71,7 +71,7 @@ public class VideoServiceImpl implements IVideoService {
 				Video video = new Video(videoDto.getTitle(),
 						videoDto.getVideoUrl(), 
 						videoDto.getMusic(), videoDto.isEnableComment(), 
-						true,0,0,user, hashTags);
+						true,0L,0L,user, hashTags);
 
 				//save video into database
 				return videoRepository.save(video);
@@ -97,9 +97,9 @@ public class VideoServiceImpl implements IVideoService {
 		videoPage.setData(listOfVideos);
 		videoPage.setPageNo(request.getPageNo());
 		videoPage.setPageSize(request.getPageSize());
-		videoPage.setTotalElements(videoPage.getTotalElements());
-		videoPage.setTotalPages(videoPage.getTotalPages());
-		videoPage.setLast(videoPage.isLast());
+		videoPage.setTotalElements(videos.getTotalElements());
+		videoPage.setTotalPages(videos.getTotalPages());
+		videoPage.setLast(videos.isLast());
 
 		return videoPage;
 	}

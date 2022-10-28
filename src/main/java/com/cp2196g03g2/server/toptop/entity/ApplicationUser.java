@@ -69,13 +69,9 @@ public class ApplicationUser {
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date createdDate;
 	
-	@JsonIgnore
+	
 	@Column(name = "one_time_password")
 	private String OTP;
-	
-	@JsonIgnore
-	@Column(name = "otp_requested_time")
-	private Date otpRequestedTime;
 	
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
@@ -180,6 +176,7 @@ public class ApplicationUser {
 	}
 	
  
+	@JsonIgnore
 	public String getOTP() {
 		return OTP;
 	}
@@ -188,13 +185,6 @@ public class ApplicationUser {
 		OTP = oTP;
 	}
 
-	public Date getOtpRequestedTime() {
-		return otpRequestedTime;
-	}
-
-	public void setOtpRequestedTime(Date otpRequestedTime) {
-		this.otpRequestedTime = otpRequestedTime;
-	}
 
 	public Role getRole() {
 		return role;

@@ -239,7 +239,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			user.setRole(roleRepository.findById(userDto.getRole()).get());
 			String OTP = GenerateUtils.getRandomNumberString().toString();
 			user.setOTP(OTP);
-			user.setOtpRequestedTime(new Date());
 			ApplicationUser userSaved = userRepository.save(user);
 			return userSaved;
 		} catch (Exception e) {
@@ -256,7 +255,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		if (checkingOTP(user, otpCode)) {
 			user.setActive(true);
 			user.setOTP(null);
-			user.setOtpRequestedTime(null);
 			return userRepository.save(user);
 		} else {
 			throw new InternalServerException("Invalid OTP Code");
@@ -271,15 +269,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		if (!user.getOTP().equals(otpCode)) {
 			return false;
 		}
-
-		long currentTimeInMillis = System.currentTimeMillis();
-		long otpRequestedTimeInMillis = user.getOtpRequestedTime().getTime();
-
-		if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
-			// OTP expires
-			return false;
-		}
-
 		return true;
 	}
 
@@ -289,7 +278,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		if (user != null) {
 			String OTP = GenerateUtils.getRandomNumberString().toString();
 			user.setOTP(OTP);
-			user.setOtpRequestedTime(new Date());
 			return userRepository.save(user);
 		}else {
 			throw new NotFoundException("Cannot found user have email : " + email);
