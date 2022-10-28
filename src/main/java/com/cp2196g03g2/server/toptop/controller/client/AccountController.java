@@ -31,15 +31,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.cp2196g03g2.server.toptop.constant.AppConstants;
 import com.cp2196g03g2.server.toptop.dto.BooleanResult;
+import com.cp2196g03g2.server.toptop.dto.FavouriteVideoDto;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.OtpRequestDto;
+import com.cp2196g03g2.server.toptop.dto.PagableObject;
+import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Role;
+import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.service.IUserService;
+import com.cp2196g03g2.server.toptop.service.IVideoService;
 import com.cp2196g03g2.server.toptop.service.impl.EmailServiceImpl;
+import com.cp2196g03g2.server.toptop.service.impl.VideoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -52,6 +59,9 @@ public class AccountController {
 	
 	@Autowired
 	private EmailServiceImpl emailServiceImpl;
+	
+	@Autowired
+	private IVideoService videoService;
 	
 	@PostMapping
 	public ApplicationUser saveUser(@RequestBody UserDto userDto, HttpServletRequest request) {
@@ -81,6 +91,17 @@ public class AccountController {
 		return new BooleanResult(userService.findByEmail(objectKey));
 	}
 	
+	
+	@GetMapping("/favourite")
+	public PagableObject<Video> findAllByPage(
+			@RequestParam(value = "userId", required = true) String userId,
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
+		return videoService.findFavouriteVideoByPage(request, userId);
+	}
 	
 	@GetMapping("/forgotPassword/{email}")
 	public ApplicationUser forgotPassword(@PathVariable String email) {
@@ -114,10 +135,19 @@ public class AccountController {
 			ApplicationUser user = userService.loginOrRegisterSocial(userDto);
 			
 			String[] role = {user.getRole().getName()};
+			Long[] videoFavourite;
+			if(user.faviouriteVideoIds().size() > 0) {
+				videoFavourite = new Long[user.faviouriteVideoIds().size()];
+				user.faviouriteVideoIds().toArray(videoFavourite);
+			}else {
+				videoFavourite = new Long[1];
+				videoFavourite[0] = 0L;
+			}		
 			Algorithm algorithm = Algorithm.HMAC256("%hDWZP9zs7Upjs7$cZI#ZwKP8IW69$".getBytes());
 			String access_token = JWT.create().withSubject(user.getEmail()).withExpiresAt(accessToken_expireDate)
 					.withIssuedAt(nowAccessToken).withIssuer(request.getRequestURL().toString())
 					.withArrayClaim("role", role)
+					.withArrayClaim("videoFavourite", videoFavourite)
 					.withClaim("id", user.getId())
 					.sign(algorithm);
 

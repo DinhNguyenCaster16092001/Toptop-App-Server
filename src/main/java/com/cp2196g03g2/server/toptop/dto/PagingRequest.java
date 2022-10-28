@@ -40,7 +40,15 @@ public class PagingRequest {
 		this.keyword = keyword;
 	}
 	
-	
+
+	public PagingRequest(int pageNo, int pageSize, String sortBy, String sortDir) {
+		this.pageNo = pageNo;
+		this.pageSize = pageSize;
+		this.sortBy = sortBy;
+		this.sortDir = sortDir;
+	}
+
+
 	public int getPageNo() {
 		return pageNo - 1;
 	}

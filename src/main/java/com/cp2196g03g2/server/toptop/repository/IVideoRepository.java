@@ -16,4 +16,5 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 															   "h.name LIKE %:keyword%) " +
 															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
+	
 }

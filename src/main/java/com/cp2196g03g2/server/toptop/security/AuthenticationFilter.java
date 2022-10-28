@@ -3,9 +3,11 @@ package com.cp2196g03g2.server.toptop.security;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.cp2196g03g2.server.toptop.dto.UsernameAndPasswordAuthenticationRequest;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,13 +87,23 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		Date refreshToken_expireDate = calendarRefreshToken.getTime();
 
 		User user = (User) authResult.getPrincipal();
-		String idUser = userService.findByEmail(user.getUsername()).getId();
+		ApplicationUser idUser = userService.findByEmail(user.getUsername());
+
+		Long[] videoFavourite;
+		if(idUser.faviouriteVideoIds().size() > 0) {
+			videoFavourite = new Long[idUser.faviouriteVideoIds().size()];
+			idUser.faviouriteVideoIds().toArray(videoFavourite);
+		}else {
+			videoFavourite = new Long[1];
+			videoFavourite[0] = 0L;
+		}
 		Algorithm algorithm = Algorithm.HMAC256("%hDWZP9zs7Upjs7$cZI#ZwKP8IW69$".getBytes());
 		String access_token = JWT.create().withSubject(user.getUsername()).withExpiresAt(accessToken_expireDate)
 				.withIssuedAt(nowAccessToken).withIssuer(request.getRequestURL().toString())
 				.withClaim("role",
-						user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-				.withClaim("id", idUser)
+				 user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.withArrayClaim("videoFavourite", videoFavourite)
+				.withClaim("id", idUser.getId())
 				.sign(algorithm);
 
 		String refresh_token = JWT.create().withSubject(user.getUsername()).withExpiresAt(refreshToken_expireDate)

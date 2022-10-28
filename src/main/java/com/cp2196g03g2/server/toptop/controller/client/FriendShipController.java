@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cp2196g03g2.server.toptop.dto.FriendShipDto;
 import com.cp2196g03g2.server.toptop.entity.FriendShip;
 import com.cp2196g03g2.server.toptop.service.IFriendShipService;
 
-@RestController
+
 @CrossOrigin
+@RestController
 @RequestMapping("/api/v1/friendship")
 public class FriendShipController {
 
@@ -19,7 +21,7 @@ public class FriendShipController {
 	private IFriendShipService friendShipService;
 	
 	@PostMapping
-	public FriendShip createFriendShip(@RequestBody FriendShip friendShip) {
-		return friendShipService.save(friendShip);
+	public FriendShip createFriendShip(@RequestBody FriendShipDto friendShipDto) {
+		return friendShipService.save(friendShipDto);
 	}
 }

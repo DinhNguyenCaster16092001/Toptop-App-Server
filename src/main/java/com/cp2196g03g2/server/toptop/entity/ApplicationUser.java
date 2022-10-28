@@ -13,11 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -90,6 +92,13 @@ public class ApplicationUser {
 	
 	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Coupon> coupons;
+	
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
+	@JoinTable(
+			  name = "tbl_favourite_video", 
+			  joinColumns = @JoinColumn(name = "user_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "video_id"))
+	private List<Video> favouriteVideos = new ArrayList<>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL, mappedBy = "user")	
 	private List<Video> videos = new ArrayList<>();
@@ -252,6 +261,28 @@ public class ApplicationUser {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	@JsonBackReference
+	public List<Video> getFavouriteVideos() {
+		return favouriteVideos;
+	}
+
+	public void setFavouriteVideos(List<Video> favouriteVideos) {
+		this.favouriteVideos = favouriteVideos;
+	}
+	
+	public void addFavouriteVideo(Video video) {
+		this.favouriteVideos.add(video);
+	}
+	
+	@JsonBackReference
+	public List<Long> faviouriteVideoIds(){
+		List<Long> idsVideo = new ArrayList<>();
+		for (Video video : favouriteVideos) {
+			idsVideo.add(video.getId());
+		}
+		return idsVideo;
 	}
 
 	@Override

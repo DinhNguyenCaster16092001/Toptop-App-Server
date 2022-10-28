@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cp2196g03g2.server.toptop.constant.AppConstants;
+import com.cp2196g03g2.server.toptop.dto.HeartDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.VideoDto;
@@ -42,6 +43,16 @@ public class VideoController {
 		return videoService.findAllByPage(request);
 	}
 	
+	@GetMapping("/favourite")
+	public PagableObject<Video> findAllByPage(
+			@RequestParam(value = "userId", required = true) String userId,
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
+		return videoService.findFavouriteVideoByPage(request, userId);
+	}
 	
 
 	@GetMapping("/watch/{id}")
@@ -54,9 +65,9 @@ public class VideoController {
 		return videoService.updateViewVideo(id);
 	}
 	
-	@PutMapping("/watch/heart/{id}")
-	public Video updateHeartVideo(@PathVariable Long id) {
-		return videoService.updateHeartVideo(id);
+	@PutMapping("/heart")
+	public Video updateHeartVideo(@RequestBody HeartDto dto) {
+		return videoService.updateHeartVideo(dto);
 	}
 	
 	

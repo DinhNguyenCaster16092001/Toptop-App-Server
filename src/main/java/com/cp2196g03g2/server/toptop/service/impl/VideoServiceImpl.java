@@ -7,11 +7,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.cp2196g03g2.server.toptop.dto.HeartDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ReportVideoDto;
@@ -103,6 +105,33 @@ public class VideoServiceImpl implements IVideoService {
 
 		return videoPage;
 	}
+	
+	
+	@Override
+	@Transactional
+	public PagableObject<Video> findFavouriteVideoByPage(PagingRequest request, String userId) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		ApplicationUser user = userRepository.findById(userId).get();
+		
+		Page<Video> videos = listToPage(pageable, user.getFavouriteVideos());
+
+		List<Video> listOfVideos = videos.getContent();
+
+		PagableObject<Video> videoPage = new PagableObject<>();
+		videoPage.setData(listOfVideos);
+		videoPage.setPageNo(request.getPageNo());
+		videoPage.setPageSize(request.getPageSize());
+		videoPage.setTotalElements(videos.getTotalElements());
+		videoPage.setTotalPages(videos.getTotalPages());
+		videoPage.setLast(videos.isLast());
+
+		return videoPage;
+	}
 
 	@Override
 	@Transactional
@@ -116,11 +145,18 @@ public class VideoServiceImpl implements IVideoService {
 	
 	@Override
 	@Transactional
-	public Video updateHeartVideo(Long id) {
-		Video video = videoRepository.findById(id)
-				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+	public Video updateHeartVideo(HeartDto dto) {
+		Video video = videoRepository.findById(dto.getVideoId())
+				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
-		video.setView(currentHeart + 1);
+		if(dto.isStatus()) {
+			video.setView(currentHeart + 1);
+		}else {
+			video.setView(currentHeart - 1);
+		}
+		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
+		user.addFavouriteVideo(video);
+		userRepository.save(user);
 		return videoRepository.save(video);
 	}
 
@@ -129,5 +165,15 @@ public class VideoServiceImpl implements IVideoService {
 	public Video findById(Long id) {
 		return videoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
 	}
+	
+	
+	protected Page<Video> listToPage(Pageable pageable, List<Video> entities) {
+	    int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
+	    int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
+
+	    List<Video> subList = entities.subList(lowerBound, upperBound);
+
+	    return new PageImpl<Video>(subList, pageable, subList.size());
+	};
 
 }
