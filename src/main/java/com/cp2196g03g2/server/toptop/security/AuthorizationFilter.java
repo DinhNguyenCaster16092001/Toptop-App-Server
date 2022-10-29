@@ -29,7 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
 
-	private String[] URL = {"/api/v1/login", 
+	private String[] URL = {"/index.html",
+							"/api/v1/login", 
 							"/api/v1/account",
 							"/api/v1/video/watch",
 							"/api/v1/comment/video"};
