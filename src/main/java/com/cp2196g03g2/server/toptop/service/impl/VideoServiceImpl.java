@@ -50,34 +50,30 @@ public class VideoServiceImpl implements IVideoService {
 	public Video save(VideoDto videoDto) {
 		try {
 			List<HashTag> hashTags = new ArrayList<>();
-			
-			//Find Hash Tag by name
+
+			// Find Hash Tag by name
 			for (String hashTag : videoDto.getHashTag()) {
-				//if not exist in database then create new one
-				if(hashTagRepository.findByName(hashTag) == null) 
-				{
-				 System.out.println(hashTag);
-				 HashTag savedHashTag = hashTagRepository.save(new HashTag(hashTag));
-				//convert array hashtag to hashset
-				 System.out.println(savedHashTag.toString());
-				}else {
+				// if not exist in database then create new one
+				if (hashTagRepository.findByName(hashTag) == null) {
+					System.out.println(hashTag);
+					HashTag savedHashTag = hashTagRepository.save(new HashTag(hashTag));
+					// convert array hashtag to hashset
+					System.out.println(savedHashTag.toString());
+				} else {
 					hashTags.add(hashTagRepository.findByName(hashTag));
 				}
-				
-			}
-			
-				//get user in database
-				ApplicationUser user = 
-						userRepository.findById(videoDto.getUserid())
-						.orElseThrow(()-> new NotFoundException("Cannot found user have id" + videoDto.getUserid()));
-				Video video = new Video(videoDto.getTitle(),
-						videoDto.getVideoUrl(), 
-						videoDto.getMusic(), videoDto.isEnableComment(), 
-						true,0L,0L,user, hashTags);
 
-				//save video into database
-				return videoRepository.save(video);
-		}catch (Exception e) {
+			}
+
+			// get user in database
+			ApplicationUser user = userRepository.findById(videoDto.getUserid())
+					.orElseThrow(() -> new NotFoundException("Cannot found user have id" + videoDto.getUserid()));
+			Video video = new Video(videoDto.getTitle(), videoDto.getVideoUrl(), videoDto.getMusic(),
+					videoDto.isEnableComment(), true, 0L, 0L, user, hashTags);
+
+			// save video into database
+			return videoRepository.save(video);
+		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
 	}
@@ -105,8 +101,7 @@ public class VideoServiceImpl implements IVideoService {
 
 		return videoPage;
 	}
-	
-	
+
 	@Override
 	@Transactional
 	public PagableObject<Video> findFavouriteVideoByPage(PagingRequest request, String userId) {
@@ -117,7 +112,7 @@ public class VideoServiceImpl implements IVideoService {
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 
 		ApplicationUser user = userRepository.findById(userId).get();
-		
+
 		Page<Video> videos = listToPage(pageable, user.getFavouriteVideos());
 
 		List<Video> listOfVideos = videos.getContent();
@@ -142,20 +137,23 @@ public class VideoServiceImpl implements IVideoService {
 		video.setView(currentView + 1);
 		return videoRepository.save(video);
 	}
-	
+
 	@Override
 	@Transactional
 	public Video updateHeartVideo(HeartDto dto) {
 		Video video = videoRepository.findById(dto.getVideoId())
 				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
-		if(dto.isStatus()) {
-			video.setView(currentHeart + 1);
-		}else {
-			video.setView(currentHeart - 1);
-		}
 		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
-		user.addFavouriteVideo(video);
+		if (dto.isStatus()) {
+			video.setView(currentHeart + 1);
+			user.addFavouriteVideo(video);
+		} else {
+			if (user.getFavouriteVideos().contains(video)) {
+				user.getFavouriteVideos().remove(video);
+				video.setView(currentHeart - 1);
+			}
+		}
 		userRepository.save(user);
 		return videoRepository.save(video);
 	}
@@ -165,15 +163,14 @@ public class VideoServiceImpl implements IVideoService {
 	public Video findById(Long id) {
 		return videoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
 	}
-	
-	
+
 	protected Page<Video> listToPage(Pageable pageable, List<Video> entities) {
-	    int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
-	    int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
+		int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
+		int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
 
-	    List<Video> subList = entities.subList(lowerBound, upperBound);
+		List<Video> subList = entities.subList(lowerBound, upperBound);
 
-	    return new PageImpl<Video>(subList, pageable, subList.size());
+		return new PageImpl<Video>(subList, pageable, subList.size());
 	};
 
 }

@@ -29,5 +29,8 @@ public class FriendShipServiceImpl implements IFriendShipService{
 		FriendShip friendShip = new FriendShip(requestUser, acceptUser, false);
 		return friendShipRepository.save(friendShip);
 	}
+	
+	
+	
 
 }
