@@ -10,16 +10,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
-	 @Override
-	    public void configureMessageBroker(MessageBrokerRegistry config) {
-	        config.enableSimpleBroker("/topic");
-	        config.setApplicationDestinationPrefixes("/app");
-	    }
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry registry) {
+		registry.setApplicationDestinationPrefixes("/app");
+		registry.enableSimpleBroker("/chatroom", "/user");
+		registry.setUserDestinationPrefix("/user");
+	}
 
-	    @Override
-	    public void registerStompEndpoints(StompEndpointRegistry registry) {
-	        registry.addEndpoint("/chat").setAllowedOrigins("*");
-	        registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
-	    }
-
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+	}
 }

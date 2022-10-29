@@ -80,15 +80,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**");
-		web.ignoring().antMatchers("/static/**");
-		web.ignoring().antMatchers("/webjars/**");
 		web.ignoring().antMatchers("/api/v1/comment/video/**");
 		web.ignoring().antMatchers("/api/v1/video/watch/**");
 		web.ignoring().antMatchers("/api/v1/account/**");
 		web.ignoring().antMatchers("/api/v1/hashtag/**");
 		web.ignoring().antMatchers("/api/v1/friendship/**");
-		web.ignoring().antMatchers("/chat/**");
-		web.ignoring().antMatchers("/message/**");
 	}
 
 }

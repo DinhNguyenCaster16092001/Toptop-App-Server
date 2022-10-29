@@ -16,8 +16,8 @@ public class PublicController {
 	 @Autowired
 	 SimpMessagingTemplate simpMessagingTemplate;
 	 
-	 	@MessageMapping("/chat")
-	    @SendTo("/topic/messages")
+	 	@MessageMapping("/message")
+		@SendTo("/chatroom/public")
 		public ResponeMessage receviePublicMessage(@Payload MessageContent content) {
 			return new ResponeMessage(content.getMessageContent());
 		}
