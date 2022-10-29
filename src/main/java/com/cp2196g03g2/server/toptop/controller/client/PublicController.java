@@ -15,15 +15,16 @@ public class PublicController {
 	 @Autowired
 	 SimpMessagingTemplate simpMessagingTemplate;
 	 
-	 	@MessageMapping("/message")
-		@SendTo("/chatroom/public")
-		public Message receviePublicMessage(@Payload Message message) {
-			return message;
-		}
+	 	@MessageMapping("/chat")
+	    @SendTo("/topic/messages")
+	    public String send(String message) throws Exception {
+	        return "test";
+	    }
 		
-	 	@MessageMapping("/private-message")
-		public Message receviePrivateMessage(@Payload Message message) {
-			simpMessagingTemplate.convertAndSendToUser(message.getReviceName(), "/private", message);
-			return message;
-		}
+		/*
+		 * @MessageMapping("/private-message") public Message
+		 * receviePrivateMessage(@Payload Message message) {
+		 * simpMessagingTemplate.convertAndSendToUser(message.getReviceName(),
+		 * "/private", message); return message; }
+		 */
 }

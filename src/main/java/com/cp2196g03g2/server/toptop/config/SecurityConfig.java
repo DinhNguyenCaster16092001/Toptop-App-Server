@@ -85,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/api/v1/account/**");
 		web.ignoring().antMatchers("/api/v1/hashtag/**");
 		web.ignoring().antMatchers("/api/v1/friendship/**");
+		web.ignoring().antMatchers("/chat/**");
 	}
 
 }
