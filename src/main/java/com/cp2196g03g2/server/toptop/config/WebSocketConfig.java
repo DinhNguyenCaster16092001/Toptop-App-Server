@@ -15,27 +15,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/topic");
 		registry.setApplicationDestinationPrefixes("/app");
+		registry.enableSimpleBroker("/chatroom", "/user");
+		registry.setUserDestinationPrefix("/user");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		 registry.addEndpoint("/chat").setAllowedOrigins("*");
-	     registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
+		registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
 	}
-	
-	 	 @Bean
-	    public WebMvcConfigurer corsConfigurer() {
-	        return new WebMvcConfigurer() {
-	            @Override
-	            public void addCorsMappings(CorsRegistry registry) {
-	                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
-	                        .allowCredentials(true) //edited, added this.
-	                        .allowedHeaders("*")
-	                        .allowedOrigins("*");
-	            }
-	        };
-	    }
 	
 }

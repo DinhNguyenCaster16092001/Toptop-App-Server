@@ -11,20 +11,19 @@ import com.cp2196g03g2.server.toptop.dto.Message;
 
 @Controller
 public class PublicController {
-
-	 @Autowired
-	 SimpMessagingTemplate simpMessagingTemplate;
 	 
-	 	@MessageMapping("/chat")
-	    @SendTo("/topic/messages")
-	    public String send(String message) throws Exception {
-	        return "test";
-	    }
+	 	@Autowired
+		private SimpMessagingTemplate simpMessagingTemplate;
 		
-		/*
-		 * @MessageMapping("/private-message") public Message
-		 * receviePrivateMessage(@Payload Message message) {
-		 * simpMessagingTemplate.convertAndSendToUser(message.getReviceName(),
-		 * "/private", message); return message; }
-		 */
+		@MessageMapping("/message")
+		@SendTo("/chatroom/public")
+		public Message receviePublicMessage(@Payload Message message) {
+			return message;
+		}
+		
+		@MessageMapping("/private-message")
+		public Message receviePrivateMessage(@Payload Message message) {
+			simpMessagingTemplate.convertAndSendToUser(message.getReviceName(), "/private", message);
+			return message;
+		}
 }
