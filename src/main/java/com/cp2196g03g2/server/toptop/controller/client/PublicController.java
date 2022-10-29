@@ -7,8 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import com.cp2196g03g2.server.toptop.dto.MessageContent;
-import com.cp2196g03g2.server.toptop.dto.ResponeMessage;
+import com.cp2196g03g2.server.toptop.dto.Message;
 
 @Controller
 public class PublicController {
@@ -18,14 +17,13 @@ public class PublicController {
 	 
 	 	@MessageMapping("/message")
 		@SendTo("/chatroom/public")
-		public ResponeMessage receviePublicMessage(@Payload MessageContent content) {
-			return new ResponeMessage(content.getMessageContent());
+		public Message receviePublicMessage(@Payload Message message) {
+			return message;
 		}
 		
-		/*
-		 * @MessageMapping("/private-message") public ResponeMessage
-		 * receviePrivateMessage(@Payload MessageContent content) {
-		 * simpMessagingTemplate.convertAndSendToUser(, "/private", message); return
-		 * message; }
-		 */
+	 	@MessageMapping("/private-message")
+		public Message receviePrivateMessage(@Payload Message message) {
+			simpMessagingTemplate.convertAndSendToUser(message.getReviceName(), "/private", message);
+			return message;
+		}
 }
