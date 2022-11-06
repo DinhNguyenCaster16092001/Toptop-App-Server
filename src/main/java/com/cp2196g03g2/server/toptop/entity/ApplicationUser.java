@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
@@ -81,6 +82,18 @@ public class ApplicationUser {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name = "role_id")
 	private Role role;
+	
+	@Transient
+	public Long followers;
+	
+	@Transient
+	public Long following;
+	
+	@Transient
+	public Long heart;
+	
+	@Transient
+	public Long view;
 
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL, mappedBy = "user")	
@@ -283,6 +296,38 @@ public class ApplicationUser {
 			idsVideo.add(video.getId());
 		}
 		return idsVideo;
+	}
+	
+	public Long getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Long followers) {
+		this.followers = followers;
+	}
+
+	public Long getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(Long following) {
+		this.following = following;
+	}
+
+	public Long getHeart() {
+		return heart;
+	}
+
+	public void setHeart(Long heart) {
+		this.heart = heart;
+	}
+
+	public Long getView() {
+		return view;
+	}
+
+	public void setView(Long view) {
+		this.view = view;
 	}
 
 	@Override

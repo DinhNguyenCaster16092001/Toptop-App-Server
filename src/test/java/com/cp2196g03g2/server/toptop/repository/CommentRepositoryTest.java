@@ -49,4 +49,12 @@ public class CommentRepositoryTest {
 		Comment savedComment = commentRepository.save(comment);
 		assertThat(savedComment.getId()).isGreaterThan(0);
 	}
+	
+	
+	@Test
+	public void testCountCommentByVideo() {
+		long videoId = 20;
+		long countComment = commentRepository.countByVideoId(videoId);
+		System.out.println(countComment);
+	}
 }

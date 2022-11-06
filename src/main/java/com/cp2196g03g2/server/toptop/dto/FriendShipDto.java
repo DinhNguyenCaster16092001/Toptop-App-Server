@@ -5,13 +5,10 @@ public class FriendShipDto {
 	private String requestId;
 	
 	private String accetpId;
-	
-	private boolean status;
 
 	public FriendShipDto(String requestId, String accetpId, boolean status) {
 		this.requestId = requestId;
 		this.accetpId = accetpId;
-		this.status = status;
 	}
 
 	public String getRequestId() {
@@ -29,14 +26,5 @@ public class FriendShipDto {
 	public void setAccetpId(String accetpId) {
 		this.accetpId = accetpId;
 	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-	
 	
 }

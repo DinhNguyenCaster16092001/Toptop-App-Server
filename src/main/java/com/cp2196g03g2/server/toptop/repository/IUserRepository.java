@@ -29,4 +29,12 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String>{
 	@Query("UPDATE ApplicationUser u SET u.isActive = :status WHERE u.id = :id")
 	@Modifying
 	void updateStatusUser(@Param("id")String id, @Param("status")boolean status);
+
+
+	@Query("SELECT COUNT(u.id) FROM ApplicationUser u WHERE u.role.id=5 AND u.isActive = true")
+	Long coutUserRoleCustomer();
+	
+	
+	@Query("SELECT u FROM ApplicationUser u WHERE u.role.id=5 AND u.isActive = true")
+	Page<ApplicationUser> findAllCustomerByPage(Pageable pageable);
 }

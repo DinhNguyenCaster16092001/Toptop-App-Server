@@ -28,20 +28,16 @@ public class FriendShip {
 	@JoinColumn(name = "accept_id")
 	private ApplicationUser acceptUser;
 	
-	@Column
-	private boolean status;
 
 	public FriendShip(Long id, ApplicationUser requestUser, ApplicationUser acceptUser, boolean status) {
 		this.id = id;
 		this.requestUser = requestUser;
 		this.acceptUser = acceptUser;
-		this.status = status;
 	}
 
 	public FriendShip(ApplicationUser requestUser, ApplicationUser acceptUser, boolean status) {
 		this.requestUser = requestUser;
 		this.acceptUser = acceptUser;
-		this.status = status;
 	}
 
 	public Long getId() {
@@ -68,18 +64,10 @@ public class FriendShip {
 		this.acceptUser = acceptUser;
 	}
 
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
 	@Override
 	public String toString() {
-		return "FriendShip [id=" + id + ", requestUser=" + requestUser + ", acceptUser=" + acceptUser + ", status="
-				+ status + "]";
+		return "FriendShip [id=" + id + ", requestUser=" + requestUser + ", acceptUser=" + acceptUser + "]";
 	}
+
 	
 }

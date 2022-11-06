@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,13 +37,15 @@ import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
+import com.cp2196g03g2.server.toptop.repository.IFriendShipRepository;
 import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
+import com.cp2196g03g2.server.toptop.repository.IVideoRepository;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 import com.cp2196g03g2.server.toptop.util.GenerateUtils;
-
 
 @Service
 public class UserServiceImpl implements IUserService, UserDetailsService {
@@ -59,6 +62,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	private IUserRepository userRepository;
 
 	@Autowired
+	private IVideoRepository videoRepository;
+
+	@Autowired
+	private IFriendShipRepository friendShipRepository;
+
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Autowired
@@ -73,7 +82,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	@Override
 	@Transactional
 	public ApplicationUser findById(String id) {
-		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
+		ApplicationUser user = userRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cannot found user have id " + id));
+		setMoreValueForUser(user);
+		return user;
 	}
 
 	@Override
@@ -246,8 +258,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		}
 	}
 
-
-
 	@Override
 	public ApplicationUser activeUserByOtpCode(String otpCode, String id) {
 		ApplicationUser user = userRepository.findById(id)
@@ -279,7 +289,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			String OTP = GenerateUtils.getRandomNumberString().toString();
 			user.setOTP(OTP);
 			return userRepository.save(user);
-		}else {
+		} else {
 			throw new NotFoundException("Cannot found user have email : " + email);
 		}
 	}
@@ -287,8 +297,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	@Override
 	@Transactional
 	public ApplicationUser resetPassword(ResetPasswordDto dto) {
-		ApplicationUser user = userRepository
-				.findById(dto.getId()).orElseThrow(() ->new NotFoundException("Cannot found user have id" + dto.getId()));
+		ApplicationUser user = userRepository.findById(dto.getId())
+				.orElseThrow(() -> new NotFoundException("Cannot found user have id" + dto.getId()));
 		user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 		return userRepository.save(user);
 	}
@@ -297,19 +307,20 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	@Transactional
 	public ApplicationUser findByEmail(String email) {
 		ApplicationUser user = userRepository.findByEmail(email);
-		if(user == null) {
+		if (user == null) {
 			throw new NotFoundException("Cannot found user have email " + email);
-		}else {
+		} else {
+			setMoreValueForUser(user);
 			return user;
 		}
-		
+
 	}
 
 	@Override
 	public ApplicationUser loginOrRegisterSocial(UserDto userDto) {
 		try {
 			ApplicationUser userSocial = userRepository.findByEmail(userDto.getEmail());
-			if(userSocial != null) {
+			if (userSocial != null) {
 				return userSocial;
 			}
 			if (userDto.getAlias() == null && userDto.getId() == null) {
@@ -325,8 +336,53 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			user.setAvatar(userDto.getAvatar());
 			user.setRole(roleRepository.findById(userDto.getRole()).get());
 			return userRepository.save(user);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
 		}
+	}
+
+	@Override
+	public PagableObject<ApplicationUser> findAllCustomer(PagingRequest request) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		Page<ApplicationUser> users = userRepository.findAllCustomerByPage(pageable);
+
+		List<ApplicationUser> listOfUsers = users.getContent();
+		
+		listOfUsers.forEach(user -> {
+			setMoreValueForUser(user);
+		});
+		PagableObject<ApplicationUser> usersPage = new PagableObject<>();
+		usersPage.setData(listOfUsers);
+		usersPage.setPageNo(request.getPageNo());
+		usersPage.setPageSize(request.getPageSize());
+		usersPage.setTotalElements(users.getTotalElements());
+		usersPage.setTotalPages(users.getTotalPages());
+		usersPage.setLast(users.isLast());
+
+		return usersPage;
+	}
+
+	protected Page<ApplicationUser> listToPage(Pageable pageable, List<ApplicationUser> entities) {
+		int lowerBound = pageable.getPageNumber() * pageable.getPageSize();
+		int upperBound = Math.min(lowerBound + pageable.getPageSize(), entities.size());
+
+		List<ApplicationUser> subList = entities.subList(lowerBound, upperBound);
+
+		return new PageImpl<ApplicationUser>(subList, pageable, subList.size());
+	};
+
+	private void setMoreValueForUser(ApplicationUser user) {
+		Long follower = friendShipRepository.countFollowerByUserId(user.getId());
+		Long following = friendShipRepository.countFollowingByUserId(user.getId());
+		Long view = videoRepository.countViewByUserId(user.getId());
+		Long heart = videoRepository.countHeartByUserId(user.getId());
+		user.setView(view != null ? heart : 0);
+		user.setHeart(heart != null ? heart : 0);
+		user.setFollowers(follower != null ? follower : 0);
+		user.setFollowing(following != null ? following : 0);
 	}
 }

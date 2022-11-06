@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/resources/**");
 		web.ignoring().antMatchers("/api/v1/comment/video/**");
+		web.ignoring().antMatchers("/api/v1/comment/childrend/**");
 		web.ignoring().antMatchers("/api/v1/video/watch/**");
 		web.ignoring().antMatchers("/api/v1/account/**");
 		web.ignoring().antMatchers("/api/v1/hashtag/**");

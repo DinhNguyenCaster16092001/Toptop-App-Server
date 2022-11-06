@@ -20,14 +20,18 @@ import com.cp2196g03g2.server.toptop.dto.ReportVideoDto;
 import com.cp2196g03g2.server.toptop.dto.VideoDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.HashTag;
+import com.cp2196g03g2.server.toptop.entity.Notification;
 import com.cp2196g03g2.server.toptop.entity.ReportVideo;
 import com.cp2196g03g2.server.toptop.entity.Video;
+import com.cp2196g03g2.server.toptop.enums.NotificationType;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
+import com.cp2196g03g2.server.toptop.repository.ICommentRepository;
 import com.cp2196g03g2.server.toptop.repository.IHashTagRepository;
 import com.cp2196g03g2.server.toptop.repository.IReportVideoRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.repository.IVideoRepository;
+import com.cp2196g03g2.server.toptop.service.INotificationService;
 import com.cp2196g03g2.server.toptop.service.IVideoService;
 
 @Service
@@ -45,6 +49,12 @@ public class VideoServiceImpl implements IVideoService {
 	@Autowired
 	private IReportVideoRepository reportVideoRepository;
 
+	@Autowired
+	private ICommentRepository commentRepository;
+	
+	@Autowired
+	private INotificationService notificationService;
+	
 	@Override
 	@Transactional
 	public Video save(VideoDto videoDto) {
@@ -68,8 +78,17 @@ public class VideoServiceImpl implements IVideoService {
 			// get user in database
 			ApplicationUser user = userRepository.findById(videoDto.getUserid())
 					.orElseThrow(() -> new NotFoundException("Cannot found user have id" + videoDto.getUserid()));
-			Video video = new Video(videoDto.getTitle(), videoDto.getVideoUrl(), videoDto.getMusic(),
-					videoDto.isEnableComment(), true, 0L, 0L, user, hashTags);
+			Video video = new Video();
+			video.setUrl(videoDto.getVideoUrl());
+			video.setTitle(videoDto.getTitle());
+			video.setMusicUrl(videoDto.getMusic());
+			video.setHeart(0L);
+			video.setEnableComment(videoDto.isEnableComment());
+			video.setView(0L);
+			video.setStatus(true);
+			/* video.setProfessed(videoDto.isProfessed()); */
+			video.setProfessed(videoDto.isProfessed());
+			video.setHashTags(hashTags);
 
 			// save video into database
 			return videoRepository.save(video);
@@ -91,6 +110,15 @@ public class VideoServiceImpl implements IVideoService {
 
 		List<Video> listOfVideos = videos.getContent();
 
+		listOfVideos.stream().forEach(video -> {
+			Long countComment = commentRepository.countByVideoId(video.getId());
+			if(countComment != null)
+				video.setComment(countComment);
+			else
+				video.setComment(0L);
+		});
+		
+		
 		PagableObject<Video> videoPage = new PagableObject<>();
 		videoPage.setData(listOfVideos);
 		videoPage.setPageNo(request.getPageNo());
@@ -116,8 +144,17 @@ public class VideoServiceImpl implements IVideoService {
 		Page<Video> videos = listToPage(pageable, user.getFavouriteVideos());
 
 		List<Video> listOfVideos = videos.getContent();
-
+		
+		listOfVideos.stream().forEach(video -> {
+			Long countComment = commentRepository.countByVideoId(video.getId());
+			if(countComment != null)
+				video.setComment(countComment);
+			else
+				video.setComment(0L);
+		});
+		
 		PagableObject<Video> videoPage = new PagableObject<>();
+		
 		videoPage.setData(listOfVideos);
 		videoPage.setPageNo(request.getPageNo());
 		videoPage.setPageSize(request.getPageSize());
@@ -148,6 +185,9 @@ public class VideoServiceImpl implements IVideoService {
 		if (dto.isStatus()) {
 			video.setView(currentHeart + 1);
 			user.addFavouriteVideo(video);
+			Notification notification = new 
+					Notification(video.getUser(), user, false, false, NotificationType.LIKE);
+			notificationService.createNotification(notification);
 		} else {
 			if (user.getFavouriteVideos().contains(video)) {
 				user.getFavouriteVideos().remove(video);
@@ -173,4 +213,5 @@ public class VideoServiceImpl implements IVideoService {
 		return new PageImpl<Video>(subList, pageable, subList.size());
 	};
 
+	
 }

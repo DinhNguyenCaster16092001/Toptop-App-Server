@@ -25,4 +25,5 @@ public interface IUserService {
 	boolean findByEmail(ObjectKey objectKey);
 	void updateStatusUser(String id, boolean status);
 	ApplicationUser loginOrRegisterSocial(UserDto userDto);
+	PagableObject<ApplicationUser> findAllCustomer(PagingRequest request);
 }

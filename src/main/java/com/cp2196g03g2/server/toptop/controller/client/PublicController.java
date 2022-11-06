@@ -7,23 +7,40 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import com.cp2196g03g2.server.toptop.dto.Message;
+import com.cp2196g03g2.server.toptop.dto.MessageDto;
+import com.cp2196g03g2.server.toptop.entity.Message;
+import com.cp2196g03g2.server.toptop.service.IFriendShipService;
+import com.cp2196g03g2.server.toptop.service.IMessageService;
 
 @Controller
 public class PublicController {
-	 
-	 	@Autowired
-		private SimpMessagingTemplate simpMessagingTemplate;
-		
-		@MessageMapping("/message")
-		@SendTo("/chatroom/public")
-		public Message receviePublicMessage(@Payload Message message) {
-			return message;
-		}
-		
-		@MessageMapping("/private-message")
-		public Message receviePrivateMessage(@Payload Message message) {
-			simpMessagingTemplate.convertAndSendToUser(message.getReviceName(), "/private", message);
-			return message;
-		}
+
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
+
+	@Autowired
+	private IMessageService messageService;
+
+	@Autowired
+	private IFriendShipService friendShipService;
+
+	@MessageMapping("/message")
+	@SendTo("/chatroom/public") 
+	public Message receviePublicMessage(@Payload Message message) {
+		return message; 
+	}
+
+	@MessageMapping("/private-message")
+	public Message receviePrivateMessage(@Payload MessageDto dto) {
+		Message message = messageService.save(dto);
+		simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/private", dto);
+		return message;
+	}
+
+	/*
+	 * @MessageMapping("/friendship") public Message receviePrivateMessage(@Payload
+	 * MessageDto dto) { Message message = messageService.save(dto);
+	 * simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/private",
+	 * dto); return message; }
+	 */
 }

@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -50,6 +51,12 @@ public class Video {
 	@Column(name = "heart")
 	private Long heart;
 	
+	@Column(name = "is_public")
+	private Boolean professed;
+	
+	@Transient
+	private Long comment;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
 	private ApplicationUser user;
@@ -77,28 +84,8 @@ public class Video {
 
 	
 
-	
-	
-	
-	
-
-
-	public Video(String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
-			Long heart, ApplicationUser user, List<HashTag> hashTags) {
-		this.title = title;
-		this.url = url;
-		this.musicUrl = musicUrl;
-		this.enableComment = enableComment;
-		this.status = status;
-		this.view = view;
-		this.heart = heart;
-		this.user = user;
-		this.hashTags = hashTags;
-	}
-
-
 	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
-			Long heart, ApplicationUser user, List<HashTag> hashTags) {
+			Long heart, boolean professed, List<HashTag> hashTags) {
 		this.id = id;
 		this.title = title;
 		this.url = url;
@@ -107,6 +94,23 @@ public class Video {
 		this.status = status;
 		this.view = view;
 		this.heart = heart;
+		this.professed = professed;
+		this.hashTags = hashTags;
+	}
+
+
+	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
+			Long heart, boolean professed, Long comment, ApplicationUser user, List<HashTag> hashTags) {
+		this.id = id;
+		this.title = title;
+		this.url = url;
+		this.musicUrl = musicUrl;
+		this.enableComment = enableComment;
+		this.status = status;
+		this.view = view;
+		this.heart = heart;
+		this.professed = professed;
+		this.comment = comment;
 		this.user = user;
 		this.hashTags = hashTags;
 	}
@@ -207,6 +211,27 @@ public class Video {
 
 	public void setHeart(Long heart) {
 		this.heart = heart;
+	}
+
+	
+	
+	@Transient
+	public Long getComment() {
+		return comment;
+	}
+
+	@Transient
+	public void setComment(Long comment) {
+		this.comment = comment;
+	}
+	
+	public Boolean isProfessed() {
+		return professed;
+	}
+
+
+	public void setProfessed(Boolean professed) {
+		this.professed = professed;
 	}
 
 

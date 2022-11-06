@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -53,7 +54,10 @@ public class Comment {
 	@JoinColumn(name = "parent_id")
 	private Comment parent;
 	
-	@OneToMany(mappedBy = "parent")
+	@Transient
+	private int childrenTotal;
+	
+	@OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
 	private List<Comment> children = new ArrayList<>();
 	
 
@@ -131,12 +135,23 @@ public class Comment {
 		this.parent = parent;
 	}
 
+	@JsonBackReference
 	public List<Comment> getChildren() {
 		return children;
 	}
 
 	public void setChildren(List<Comment> children) {
 		this.children = children;
+	}
+	
+	
+
+	public int getChildrenTotal() {
+		return this.children.size();
+	}
+
+	public void setChildrenTotal(int childrenTotal) {
+		this.childrenTotal = childrenTotal;
 	}
 
 	@Override
