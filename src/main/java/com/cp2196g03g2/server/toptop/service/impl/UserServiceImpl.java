@@ -380,7 +380,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		Long following = friendShipRepository.countFollowingByUserId(user.getId());
 		Long view = videoRepository.countViewByUserId(user.getId());
 		Long heart = videoRepository.countHeartByUserId(user.getId());
-		user.setView(view != null ? heart : 0);
 		user.setHeart(heart != null ? heart : 0);
 		user.setFollowers(follower != null ? follower : 0);
 		user.setFollowing(following != null ? following : 0);

@@ -92,10 +92,6 @@ public class ApplicationUser {
 	@Transient
 	public Long heart;
 	
-	@Transient
-	public Long view;
-
-	
 	@OneToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL, mappedBy = "user")	
 	private List<TicketShop> ticketsShops = new ArrayList<>();
 	
@@ -299,7 +295,7 @@ public class ApplicationUser {
 	}
 	
 	public Long getFollowers() {
-		return followers;
+		return followers != null ? followers : 0;
 	}
 
 	public void setFollowers(Long followers) {
@@ -307,7 +303,7 @@ public class ApplicationUser {
 	}
 
 	public Long getFollowing() {
-		return following;
+		return following != null ? following : 0;
 	}
 
 	public void setFollowing(Long following) {
@@ -315,19 +311,11 @@ public class ApplicationUser {
 	}
 
 	public Long getHeart() {
-		return heart;
+		return heart != null ? heart : 0;
 	}
 
 	public void setHeart(Long heart) {
 		this.heart = heart;
-	}
-
-	public Long getView() {
-		return view;
-	}
-
-	public void setView(Long view) {
-		this.view = view;
 	}
 
 	@Override

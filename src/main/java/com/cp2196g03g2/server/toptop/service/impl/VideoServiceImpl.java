@@ -51,10 +51,12 @@ public class VideoServiceImpl implements IVideoService {
 
 	@Autowired
 	private ICommentRepository commentRepository;
-	
+
 	@Autowired
 	private INotificationService notificationService;
 	
+	
+
 	@Override
 	@Transactional
 	public Video save(VideoDto videoDto) {
@@ -112,13 +114,12 @@ public class VideoServiceImpl implements IVideoService {
 
 		listOfVideos.stream().forEach(video -> {
 			Long countComment = commentRepository.countByVideoId(video.getId());
-			if(countComment != null)
+			if (countComment != null)
 				video.setComment(countComment);
 			else
 				video.setComment(0L);
 		});
-		
-		
+
 		PagableObject<Video> videoPage = new PagableObject<>();
 		videoPage.setData(listOfVideos);
 		videoPage.setPageNo(request.getPageNo());
@@ -144,17 +145,17 @@ public class VideoServiceImpl implements IVideoService {
 		Page<Video> videos = listToPage(pageable, user.getFavouriteVideos());
 
 		List<Video> listOfVideos = videos.getContent();
-		
+
 		listOfVideos.stream().forEach(video -> {
 			Long countComment = commentRepository.countByVideoId(video.getId());
-			if(countComment != null)
+			if (countComment != null)
 				video.setComment(countComment);
 			else
 				video.setComment(0L);
 		});
-		
+
 		PagableObject<Video> videoPage = new PagableObject<>();
-		
+
 		videoPage.setData(listOfVideos);
 		videoPage.setPageNo(request.getPageNo());
 		videoPage.setPageSize(request.getPageSize());
@@ -182,16 +183,23 @@ public class VideoServiceImpl implements IVideoService {
 				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
 		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
+		Notification notification = 
+				new Notification(video.getUser(), user, video, null, false, false, 1);
 		if (dto.isStatus()) {
-			video.setView(currentHeart + 1);
+			video.setHeart(currentHeart + 1);
 			user.addFavouriteVideo(video);
-			Notification notification = new 
-					Notification(video.getUser(), user, false, false, NotificationType.LIKE);
 			notificationService.createNotification(notification);
 		} else {
 			if (user.getFavouriteVideos().contains(video)) {
 				user.getFavouriteVideos().remove(video);
-				video.setView(currentHeart - 1);
+				if (video.getHeart() < 0) {
+					video.setHeart(0L);
+				} else {
+					video.setHeart(currentHeart - 1);
+				}
+				Notification existNotification = notificationService.getHeartNotifcation(notification);
+				if(existNotification != null)
+					notificationService.deleteNotification(existNotification);	
 			}
 		}
 		userRepository.save(user);
@@ -213,5 +221,4 @@ public class VideoServiceImpl implements IVideoService {
 		return new PageImpl<Video>(subList, pageable, subList.size());
 	};
 
-	
 }

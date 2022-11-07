@@ -44,6 +44,8 @@ public class NotificationServiceImpl implements INotificationService {
 		notification.setReaded(true);
 		return notifacationRepository.save(notification);
 	}
+	
+	
 
 	@Override
 	@Transactional
@@ -67,4 +69,25 @@ public class NotificationServiceImpl implements INotificationService {
 		return notifis;
 	}
 
+	@Override
+	@Transactional
+	public Notification getFollowNotifcation(Notification notification) {
+		return notifacationRepository.getFollowNotificationExist(notification.getUserFrom().getId(), notification.getUserTo().getId());
+	}
+
+	@Override
+	@Transactional
+	public Notification getHeartNotifcation(Notification notification) {
+		return notifacationRepository.getHeartVideoNotificationExist(
+				notification.getUserFrom().getId(), 
+				notification.getUserTo().getId(),
+				notification.getFromVideo().getId());
+	}
+
+	@Override
+	public void deleteNotification(Notification notification) {
+		notifacationRepository.delete(notification);
+	}
+
+	
 }

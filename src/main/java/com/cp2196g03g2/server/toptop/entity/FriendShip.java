@@ -28,6 +28,8 @@ public class FriendShip {
 	@JoinColumn(name = "accept_id")
 	private ApplicationUser acceptUser;
 	
+	public FriendShip() {
+	}
 
 	public FriendShip(Long id, ApplicationUser requestUser, ApplicationUser acceptUser, boolean status) {
 		this.id = id;

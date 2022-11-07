@@ -43,6 +43,8 @@ import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Role;
 import com.cp2196g03g2.server.toptop.entity.Video;
+import com.cp2196g03g2.server.toptop.repository.IFriendShipRepository;
+import com.cp2196g03g2.server.toptop.service.IFriendShipService;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 import com.cp2196g03g2.server.toptop.service.IVideoService;
 import com.cp2196g03g2.server.toptop.service.impl.EmailServiceImpl;
@@ -62,6 +64,9 @@ public class AccountController {
 	
 	@Autowired
 	private IVideoService videoService;
+	
+	@Autowired
+	private IFriendShipService friendShipService;
 	
 	@PostMapping
 	public ApplicationUser saveUser(@RequestBody UserDto userDto, HttpServletRequest request) {
@@ -92,7 +97,10 @@ public class AccountController {
 	}
 	
 	
-	
+	@GetMapping("/follow")
+	public BooleanResult isYouFollowUser(@RequestParam(value = "requestId", required = false) String requestId, @RequestParam(value = "acceptId", required = false) String acceptId) {
+		return new BooleanResult(friendShipService.isYouFollowUser(requestId, acceptId));
+	}
 	
 	@GetMapping("/forgotPassword/{email}")
 	public ApplicationUser forgotPassword(@PathVariable String email) {

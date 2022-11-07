@@ -52,10 +52,11 @@ public class CommentServiceImpl implements ICommentService{
 		comment.setContent(commentDto.getContent());
 		comment.setUser(user);
 		comment.setVideo(video);
-		Notification notification = new 
-				Notification(video.getUser(), user, false, false, NotificationType.LIKE);
+		Comment savedComment = commentRepository.save(comment);
+		Notification notification = 
+				new Notification(video.getUser(), user, video, savedComment, false, false, 2);
 		notificationService.createNotification(notification);
-		return commentRepository.save(comment);
+		return savedComment;
 	}
 
 	@Override
