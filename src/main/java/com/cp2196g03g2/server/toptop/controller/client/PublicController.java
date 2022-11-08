@@ -26,14 +26,14 @@ public class PublicController {
 
 	@MessageMapping("/message")
 	@SendTo("/chatroom/public") 
-	public MessageDto receviePublicMessage(@Payload MessageDto message) {
+	public Message receviePublicMessage(@Payload Message message) {
 		return message; 
 	}
 
 	@MessageMapping("/private-message")
 	public Message receviePrivateMessage(@Payload MessageDto dto) {
 		Message message = messageService.save(dto);
-		simpMessagingTemplate.convertAndSendToUser(dto.getRecciveId(), "/private", message);
+		simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/private", dto);
 		return message;
 	}
 

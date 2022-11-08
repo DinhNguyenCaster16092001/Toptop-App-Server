@@ -5,7 +5,7 @@ public class MessageDto {
 	private Long id;
 	private String content;
 	private String senderId;
-	private String recciveId;
+	private String reccive_id;
 	private boolean status;
 	
 	
@@ -14,19 +14,19 @@ public class MessageDto {
 	}
 
 
-	public MessageDto(String content, String senderId, String recciveId, boolean status) {
+	public MessageDto(String content, String senderId, String reccive_id, boolean status) {
 		this.content = content;
 		this.senderId = senderId;
-		this.recciveId = recciveId;
+		this.reccive_id = reccive_id;
 		this.status = status;
 	}
 
 
-	public MessageDto(Long id, String content, String senderId, String recciveId, boolean status) {
+	public MessageDto(Long id, String content, String senderId, String reccive_id, boolean status) {
 		this.id = id;
 		this.content = content;
 		this.senderId = senderId;
-		this.recciveId = recciveId;
+		this.reccive_id = reccive_id;
 		this.status = status;
 	}
 
@@ -60,13 +60,14 @@ public class MessageDto {
 		this.senderId = senderId;
 	}
 
-	public String getRecciveId() {
-		return recciveId;
+
+	public String getReccive_id() {
+		return reccive_id;
 	}
 
 
-	public void setRecciveId(String recciveId) {
-		this.recciveId = recciveId;
+	public void setReccive_id(String reccive_id) {
+		this.reccive_id = reccive_id;
 	}
 
 
