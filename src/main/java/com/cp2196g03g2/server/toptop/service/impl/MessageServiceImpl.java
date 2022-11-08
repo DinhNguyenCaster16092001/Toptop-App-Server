@@ -41,7 +41,7 @@ public class MessageServiceImpl implements IMessageService{
 		Message message = new Message();
 		
 		ApplicationUser senderUser = userRepository.findById(dto.getSenderId()).get();
-		ApplicationUser recciveUser = userRepository.findById(dto.getReccive_id()).get();
+		ApplicationUser recciveUser = userRepository.findById(dto.getRecciveId()).get();
 		
 		message.setCreatedDate(new Date());
 		message.setContent(dto.getContent());

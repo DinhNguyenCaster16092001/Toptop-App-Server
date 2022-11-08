@@ -26,23 +26,15 @@ public class PublicController {
 
 	@MessageMapping("/message")
 	@SendTo("/chatroom/public") 
-	public com.cp2196g03g2.server.toptop.dto.Message receviePublicMessage(@Payload com.cp2196g03g2.server.toptop.dto.Message message) {
+	public MessageDto receviePublicMessage(@Payload MessageDto message) {
 		return message; 
 	}
 
-	/*
-	 * @MessageMapping("/private-message") public Message
-	 * receviePrivateMessage(@Payload MessageDto dto) { Message message =
-	 * messageService.save(dto);
-	 * simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/private",
-	 * message); return message; }
-	 */
-	
-	
 	@MessageMapping("/private-message")
-	public com.cp2196g03g2.server.toptop.dto.Message receviePrivateMessage(@Payload com.cp2196g03g2.server.toptop.dto.Message dto) {
-		simpMessagingTemplate.convertAndSendToUser(dto.getReceiverName(), "/private", dto);
-		return dto;
+	public Message receviePrivateMessage(@Payload MessageDto dto) {
+		Message message = messageService.save(dto);
+		simpMessagingTemplate.convertAndSendToUser(dto.getRecciveId(), "/private", message);
+		return message;
 	}
 
 	/*
