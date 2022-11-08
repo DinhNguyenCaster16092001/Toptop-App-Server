@@ -28,7 +28,7 @@ public interface IMessageRepository extends JpaRepository<Message, Long>{
 
     @Query("SELECT m FROM Message m WHERE (m.recciveUser.id =:userId " + 
     		"AND m.senderUser.id=:friendId) " +
-    		"OR (m.recciveUser.id =:userId " +
-    		"AND m.senderUser.id=:friendId) ")
+    		"OR (m.recciveUser.id =:friendId " +
+    		"AND m.senderUser.id=:userId) ")
     Page<Message> findAllMessageByUserIdAndFriendId(@Param("userId") String userId, @Param("friendId") String friendId, Pageable pageable);
 }
