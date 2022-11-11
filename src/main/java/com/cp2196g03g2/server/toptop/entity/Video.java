@@ -40,19 +40,22 @@ public class Video {
 	private String musicUrl;
 	
 	@Column(name = "enable_comment")
-	private boolean enableComment;
+	private boolean enableComment = true;
 	
 	@Column(name = "status")
-	private boolean status;
+	private boolean status = true;
 	
-	@Column(name = "view")
+	@Column(name = "view", columnDefinition = "BIGINT default 0")
 	private Long view;
 	
-	@Column(name = "heart")
+	@Column(name = "heart", columnDefinition = "BIGINT default 0")
 	private Long heart;
 	
+	@Column(columnDefinition = "BIGINT default 0")
+	private Long share;
+	
 	@Column(name = "is_public")
-	private Boolean professed;
+	private boolean professed = true;
 	
 	@Transient
 	private Long comment;
@@ -214,7 +217,21 @@ public class Video {
 	}
 
 	
-	
+	public Long getShare() {
+		return share;
+	}
+
+
+	public void setShare(Long share) {
+		this.share = share;
+	}
+
+
+	public Boolean getProfessed() {
+		return professed;
+	}
+
+
 	@Transient
 	public Long getComment() {
 		return comment;

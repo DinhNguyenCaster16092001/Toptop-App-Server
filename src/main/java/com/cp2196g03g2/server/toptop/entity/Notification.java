@@ -177,6 +177,16 @@ public class Notification {
 		this.fromComment = fromComment;
 	}
 	
+	
+	
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;

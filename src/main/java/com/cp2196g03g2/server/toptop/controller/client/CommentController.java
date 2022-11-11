@@ -34,7 +34,9 @@ public class CommentController {
 
 	@PostMapping
 	public Comment saveComment(@RequestBody CommentDto dto) {
-		return commentService.save(dto);
+		if (dto.getParentId() == null)
+			return saveComment(dto);
+		return commentService.replyComment(dto);
 	}
 
 	@GetMapping("/childrend/{parentId}")

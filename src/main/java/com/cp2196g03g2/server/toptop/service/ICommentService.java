@@ -9,6 +9,7 @@ import com.cp2196g03g2.server.toptop.entity.Comment;
 
 public interface ICommentService {
 	Comment save(CommentDto commentDto);
+	Comment replyComment(CommentDto commentDto);
 	List<Comment> findAllParentCommentByVideoId(Long videoId);
 	PagableObject<Comment> findChildrenCommentByParentId(Long parentId, PagingRequest request);
 }

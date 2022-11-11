@@ -69,19 +69,10 @@ public class MessageServiceImpl implements IMessageService{
 
 		Page<Message> messages = messageRepository.findAllMessageByUserIdAndFriendId(userId, friendId, pageable);
 
-		// reverse order list message
-		List<Message> upsideDownListMessage = 
-					messages.getContent().stream().
-					sorted(Comparator.comparing(Message::getId)).
-					collect(Collectors.toList());
-
-		for (Message message : upsideDownListMessage) {
-			System.out.println(message.toString());
-		}
 
 		PagableObject<Message> messagePagable = new PagableObject<>();
 
-		messagePagable.setData(upsideDownListMessage);
+		messagePagable.setData(messages.getContent());
 		messagePagable.setPageNo(request.getPageNo());
 		messagePagable.setPageSize(request.getPageSize());
 		messagePagable.setTotalElements(messages.getTotalElements());

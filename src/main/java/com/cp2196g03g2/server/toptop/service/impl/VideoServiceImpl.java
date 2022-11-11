@@ -54,8 +54,6 @@ public class VideoServiceImpl implements IVideoService {
 
 	@Autowired
 	private INotificationService notificationService;
-	
-	
 
 	@Override
 	@Transactional
@@ -183,8 +181,7 @@ public class VideoServiceImpl implements IVideoService {
 				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
 		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
-		Notification notification = 
-				new Notification(video.getUser(), user, video, null, false, false, 1);
+		Notification notification = new Notification(video.getUser(), user, video, null, false, false, 1);
 		if (dto.isStatus()) {
 			video.setHeart(currentHeart + 1);
 			user.addFavouriteVideo(video);
@@ -198,8 +195,8 @@ public class VideoServiceImpl implements IVideoService {
 					video.setHeart(currentHeart - 1);
 				}
 				Notification existNotification = notificationService.getHeartNotifcation(notification);
-				if(existNotification != null)
-					notificationService.deleteNotification(existNotification);	
+				if (existNotification != null)
+					notificationService.deleteNotification(existNotification);
 			}
 		}
 		userRepository.save(user);
@@ -209,7 +206,14 @@ public class VideoServiceImpl implements IVideoService {
 	@Override
 	@Transactional
 	public Video findById(Long id) {
-		return videoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+		Video video = videoRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + id));
+		Long countComment = commentRepository.countByVideoId(video.getId());
+		if (countComment != null)
+			video.setComment(countComment);
+		else
+			video.setComment(0L);
+		return video;
 	}
 
 	protected Page<Video> listToPage(Pageable pageable, List<Video> entities) {
@@ -219,6 +223,15 @@ public class VideoServiceImpl implements IVideoService {
 		List<Video> subList = entities.subList(lowerBound, upperBound);
 
 		return new PageImpl<Video>(subList, pageable, subList.size());
+	}
+
+	@Override
+	@Transactional
+	public Video updateShareVideo(Long id) {
+		Video video = videoRepository.findById(id).get();
+		Long currentNumberShare = video.getShare() != null ? video.getShare() + 1 : 0;
+		video.setShare(currentNumberShare);
+		return videoRepository.save(video);
 	};
 
 }

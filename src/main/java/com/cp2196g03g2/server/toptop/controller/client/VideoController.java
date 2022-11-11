@@ -70,6 +70,11 @@ public class VideoController {
 		return videoService.updateHeartVideo(dto);
 	}
 	
+	@PutMapping("/share/{id}")
+	public Video updateHeartVideo(@PathVariable Long id) {
+		return videoService.updateShareVideo(id);
+	}
+	
 	
 	@PostMapping("/interactive")
 	@PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_SHOP_USER')")

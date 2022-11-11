@@ -12,6 +12,7 @@ public interface IVideoService {
 	PagableObject<Video> findAllByPage(PagingRequest request);
 	Video updateViewVideo(Long id);
 	Video updateHeartVideo(HeartDto dto);
+	Video updateShareVideo(Long id);
 	Video findById(Long id);
 	PagableObject<Video> findFavouriteVideoByPage(PagingRequest request, String userId);
 }
