@@ -1,6 +1,7 @@
 package com.cp2196g03g2.server.toptop.controller.admin;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import com.cp2196g03g2.server.toptop.dto.TicketShopDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.TicketShop;
 import com.cp2196g03g2.server.toptop.enums.TicketStatus;
+import com.cp2196g03g2.server.toptop.model.ChartCloumModel;
 import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.ITicketShopService;
@@ -66,6 +68,24 @@ public class TicketShopAdminController {
 		return ticketShopService.findById(id);
 	}
 	
+	
+	@GetMapping("/reports/month/{status}")
+	public Long totalUserSendingTicketByMonth(@PathVariable Integer status) {
+		return ticketShopService.totalTicketByCurrentMonthPassStatus(status);
+	}
+	
+	@GetMapping("/reports/year/{status}")
+	public Long totalUserSendingTicketByYear(@PathVariable Integer status) {
+		return ticketShopService.totalTicketByCurrentYearPassStatus(status);
+	}
+	
+	
+	@GetMapping("/reports")
+	public List<ChartCloumModel> staticsTicketByYear(@RequestParam(required = true) Integer status, @RequestParam(name = "year", required = false) Integer year) {
+		return ticketShopService.ticketStatisticsByYearAndStatus(status, year);
+	}
+	
+	
 	@GetMapping("/user/{userid}")
 	public ApplicationUser findByUserId(@PathVariable String userid){
 		return userService.findById(userid);
@@ -91,5 +111,8 @@ public class TicketShopAdminController {
 		}
 		return ticketUpdate;
 	}
+	
+	
+	
 
 }
