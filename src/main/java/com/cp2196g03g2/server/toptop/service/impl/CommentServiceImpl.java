@@ -133,4 +133,26 @@ public class CommentServiceImpl implements ICommentService {
 		set.removeIf(x -> x.equals(childComment.getUser().getId()));
 		return set;
 	}
+
+	@Override
+	public PagableObject<Comment> findAllParentCommentByVideoId(Long videoId, PagingRequest request) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		Page<Comment> comments = commentRepository.findAllParentCommentByVideoId(videoId, pageable);
+		List<Comment> listOfComments = comments.getContent();
+
+		PagableObject<Comment> commentPage = new PagableObject<>();
+		commentPage.setData(listOfComments);
+		commentPage.setPageNo(request.getPageNo());
+		commentPage.setPageSize(request.getPageSize());
+		commentPage.setTotalElements(comments.getTotalElements());
+		commentPage.setTotalPages(comments.getTotalPages());
+		commentPage.setLast(comments.isLast());
+
+		return commentPage;
+	}
 }

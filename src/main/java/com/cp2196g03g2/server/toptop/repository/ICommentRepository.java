@@ -16,6 +16,9 @@ public interface ICommentRepository extends JpaRepository<Comment, Long>{
 	@Query("SELECT c FROM Comment c WHERE c.video.id =:videoid AND c.parent.id = NULL")
 	List<Comment> findAllParentCommentByVideoId(@Param("videoid")Long videoId);
 	
+	@Query("SELECT c FROM Comment c WHERE c.video.id =:videoid AND c.parent.id = NULL")
+	Page<Comment> findAllParentCommentByVideoId(@Param("videoid")Long videoId, Pageable pageable);
+	
 	@Query("SELECT COUNT(c) FROM Comment c WHERE c.video.id =:videoid")
 	long countByVideoId(@Param("videoid")Long videoId);
 	

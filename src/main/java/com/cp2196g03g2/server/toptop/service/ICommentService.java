@@ -11,5 +11,6 @@ public interface ICommentService {
 	Comment save(CommentDto commentDto);
 	Comment replyComment(CommentDto commentDto);
 	List<Comment> findAllParentCommentByVideoId(Long videoId);
+	PagableObject<Comment> findAllParentCommentByVideoId(Long videoId, PagingRequest request);
 	PagableObject<Comment> findChildrenCommentByParentId(Long parentId, PagingRequest request);
 }
