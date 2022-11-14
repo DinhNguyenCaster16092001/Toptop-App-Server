@@ -35,7 +35,7 @@ public class CommentController {
 	@PostMapping
 	public Comment saveComment(@RequestBody CommentDto dto) {
 		if (dto.getParentId() == null)
-			return saveComment(dto);
+			return commentService.save(dto);
 		return commentService.replyComment(dto);
 	}
 

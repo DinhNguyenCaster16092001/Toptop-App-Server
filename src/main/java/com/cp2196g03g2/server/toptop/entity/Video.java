@@ -37,7 +37,7 @@ public class Video {
 	private String url;
 	
 	@Column(name = "music", nullable = false)
-	private String musicUrl;
+	private String musicUrl; 
 	
 	@Column(name = "enable_comment")
 	private boolean enableComment = true;

@@ -16,8 +16,6 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
 
-	
-	
 	@Query("SELECT SUM(v.view) FROM Video v WHERE v.user.id =:userid")
 	Long countViewByUserId(@Param("userid") String userid);
 	
