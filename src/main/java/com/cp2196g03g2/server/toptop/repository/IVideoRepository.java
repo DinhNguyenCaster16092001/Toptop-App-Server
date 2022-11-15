@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Video;
 
 public interface IVideoRepository extends JpaRepository<Video, Long> {
@@ -13,9 +14,14 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 	@Query("SELECT v FROM Video v LEFT JOIN v.hashTags h WHERE (v.title LIKE %:keyword% OR " + 
 															   "v.user.alias LIKE %:keyword% OR "  +
 															   "h.name LIKE %:keyword%) " +
+															   "AND v.professed = 1 " +
 															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
 
+	Page<Video> findByUser(ApplicationUser user, Pageable pageable);
+	
+	Page<Video> findByMusicUrl(String musicUrl, Pageable pageable);
+	
 	@Query("SELECT SUM(v.view) FROM Video v WHERE v.user.id =:userid")
 	Long countViewByUserId(@Param("userid") String userid);
 	

@@ -5,5 +5,6 @@ public enum NotificationType {
 	COMMENT, 
 	REPLY_COMMENT, 
 	FOLLOW, 
-	MESSAGE
+	MESSAGE,
+	LIKE_COMMENT
 }

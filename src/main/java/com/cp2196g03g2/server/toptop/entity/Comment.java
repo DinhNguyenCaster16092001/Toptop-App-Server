@@ -35,6 +35,10 @@ public class Comment {
 	@Column
 	private String content;
 	
+	
+	@Column
+	private Long heart;
+	
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
 	@JsonSerialize(as = Date.class)
@@ -72,14 +76,16 @@ public class Comment {
 		this.parent = parent;
 	}
 
-	public Comment(Long id, String content, Date createdDate, ApplicationUser user, Video video, Comment parent,
-			List<Comment> children) {
+	public Comment(Long id, String content, Long heart, Date createdDate, ApplicationUser user, Video video,
+			Comment parent, int childrenTotal, List<Comment> children) {
 		this.id = id;
 		this.content = content;
+		this.heart = heart;
 		this.createdDate = createdDate;
 		this.user = user;
 		this.video = video;
 		this.parent = parent;
+		this.childrenTotal = childrenTotal;
 		this.children = children;
 	}
 
@@ -152,6 +158,14 @@ public class Comment {
 
 	public void setChildrenTotal(int childrenTotal) {
 		this.childrenTotal = childrenTotal;
+	}
+	
+	public Long getHeart() {
+		return heart;
+	}
+
+	public void setHeart(Long heart) {
+		this.heart = heart;
 	}
 
 	@Override

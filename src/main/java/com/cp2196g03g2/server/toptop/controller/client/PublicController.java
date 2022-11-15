@@ -25,9 +25,9 @@ public class PublicController {
 	private IFriendShipService friendShipService;
 
 	@MessageMapping("/message")
-	@SendTo("/chatroom/public") 
+	@SendTo("/chatroom/public")
 	public Message receviePublicMessage(@Payload Message message) {
-		return message; 
+		return message;
 	}
 
 	@MessageMapping("/private-message")
@@ -35,6 +35,15 @@ public class PublicController {
 		Message message = messageService.save(dto);
 		simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/private", dto);
 		return message;
+	}
+
+	@MessageMapping("/pending-message")
+	public Boolean pendingMessage(@Payload MessageDto dto) {
+		if (dto.getContent().length() > 0) {
+			simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/pending", true);
+			return true;
+		}
+		return false;
 	}
 
 	/*

@@ -11,4 +11,5 @@ public interface IFriendShipService {
 	List<ApplicationUser> getListFriendByUserId(String userId);
 	List<ApplicationUser> findAllFriendByName(String userId,String name);
 	boolean isYouFollowUser(String requestId, String acceptId);
+	void deleteByRequestId(String requestId, String acceptId);
 }

@@ -93,4 +93,15 @@ public class FriendShipServiceImpl implements IFriendShipService {
 			return true;
 	}
 
+	@Override
+	@Transactional
+	public void deleteByRequestId(String requestId, String acceptId) {
+		try {
+			friendShipRepository.deleteByRequestId(requestId, acceptId);
+		}catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
+		
+	}
+
 }

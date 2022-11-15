@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.cp2196g03g2.server.toptop.dto.CommentDto;
+import com.cp2196g03g2.server.toptop.dto.LikeDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
@@ -124,10 +125,9 @@ public class CommentServiceImpl implements ICommentService {
 		List<Comment> chidrenComments = parentComment.getChildren();
 		Set<String> set = new HashSet<>();
 		if (chidrenComments.size() > 0) {
-			set = chidrenComments.stream().flatMap(p -> Stream.of(p.getUser().getId()))
-					.collect(Collectors.toSet());
+			set = chidrenComments.stream().flatMap(p -> Stream.of(p.getUser().getId())).collect(Collectors.toSet());
 		}
-		if(parentComment.getUser().getId() != childComment.getUser().getId()) {
+		if (parentComment.getUser().getId() != childComment.getUser().getId()) {
 			set.add(parentComment.getUser().getId());
 		}
 		set.removeIf(x -> x.equals(childComment.getUser().getId()));
@@ -154,5 +154,39 @@ public class CommentServiceImpl implements ICommentService {
 		commentPage.setLast(comments.isLast());
 
 		return commentPage;
+	}
+
+	@Override
+	@Transactional
+	public Comment likeComment(LikeDto dto) {
+		// get user information
+		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
+
+		// get comment information
+		Comment comment = commentRepository.findById(dto.getCommenId()).get();
+
+		Long currentNumberLike = comment.getHeart() != null ? comment.getHeart() : 0;
+		if (dto.isStatus())
+			currentNumberLike += 1;
+		else
+			currentNumberLike -= 1;
+		
+		if (currentNumberLike < 0)
+			currentNumberLike = 0L;
+		
+		comment.setHeart(currentNumberLike);
+
+		// ignore notification when user is owner that comment
+		if (!ignoreOwnerComment(user, comment)) {
+			Notification notification = new Notification(comment.getUser(), user, comment.getVideo(), comment, false,
+					false, 6);
+			notificationService.createNotification(notification);
+		}
+
+		return commentRepository.save(comment);
+	}
+
+	private boolean ignoreOwnerComment(ApplicationUser user, Comment comment) {
+		return user.getId().equals(comment.getUser().getId());
 	}
 }

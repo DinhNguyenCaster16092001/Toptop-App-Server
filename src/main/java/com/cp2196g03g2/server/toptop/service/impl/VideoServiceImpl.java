@@ -232,6 +232,71 @@ public class VideoServiceImpl implements IVideoService {
 		Long currentNumberShare = video.getShare() != null ? video.getShare() + 1 : 0;
 		video.setShare(currentNumberShare);
 		return videoRepository.save(video);
+	}
+
+	@Override
+	public PagableObject<Video> findVideoByUserId(PagingRequest request, String userId) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		ApplicationUser user = userRepository.findById(userId).get();
+		
+		Page<Video> videos = videoRepository.findByUser(user, pageable);
+
+		List<Video> listOfVideos = videos.getContent();
+
+		listOfVideos.stream().forEach(video -> {
+			Long countComment = commentRepository.countByVideoId(video.getId());
+			if (countComment != null)
+				video.setComment(countComment);
+			else
+				video.setComment(0L);
+		});
+
+		PagableObject<Video> videoPage = new PagableObject<>();
+		videoPage.setData(listOfVideos);
+		videoPage.setPageNo(request.getPageNo());
+		videoPage.setPageSize(request.getPageSize());
+		videoPage.setTotalElements(videos.getTotalElements());
+		videoPage.setTotalPages(videos.getTotalPages());
+		videoPage.setLast(videos.isLast());
+
+		return videoPage;
+	}
+
+	@Override
+	public PagableObject<Video> findVideoByMusic(PagingRequest request, String music) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		
+		Page<Video> videos = videoRepository.findByMusicUrl(music, pageable);
+
+		List<Video> listOfVideos = videos.getContent();
+
+		listOfVideos.stream().forEach(video -> {
+			Long countComment = commentRepository.countByVideoId(video.getId());
+			if (countComment != null)
+				video.setComment(countComment);
+			else
+				video.setComment(0L);
+		});
+
+		PagableObject<Video> videoPage = new PagableObject<>();
+		videoPage.setData(listOfVideos);
+		videoPage.setPageNo(request.getPageNo());
+		videoPage.setPageSize(request.getPageSize());
+		videoPage.setTotalElements(videos.getTotalElements());
+		videoPage.setTotalPages(videos.getTotalPages());
+		videoPage.setLast(videos.isLast());
+
+		return videoPage;
 	};
 
 }
