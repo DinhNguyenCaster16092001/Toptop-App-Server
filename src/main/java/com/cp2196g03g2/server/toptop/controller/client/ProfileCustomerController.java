@@ -34,6 +34,12 @@ public class ProfileCustomerController {
 	}
 	
 	
+	@GetMapping("alias/{alias}")
+	public ApplicationUser findByAlias(@PathVariable String alias) {
+		return userService.findByAlias(alias);
+	}
+	
+	
 	
 	@PutMapping
 	public ApplicationUser updateProfile(@RequestBody UserDto userDto) {

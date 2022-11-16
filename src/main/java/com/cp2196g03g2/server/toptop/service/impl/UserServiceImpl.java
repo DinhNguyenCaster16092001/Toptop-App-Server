@@ -384,4 +384,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		user.setFollowers(follower != null ? follower : 0);
 		user.setFollowing(following != null ? following : 0);
 	}
+
+	@Override
+	public ApplicationUser findByAlias(String alias) {
+		return userRepository.findByAlias(alias);
+	}
 }

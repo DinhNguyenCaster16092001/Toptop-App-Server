@@ -20,6 +20,7 @@ public interface IUserService {
 	ApplicationUser sendOtpCodeByEmail(String email);
 	ApplicationUser resetPassword(ResetPasswordDto dto);
 	ApplicationUser findByEmail(String email);
+	ApplicationUser findByAlias(String alias);
 	void delete(String id);
 	boolean findByAlias(ObjectKey objectKey);
 	boolean findByEmail(ObjectKey objectKey);
