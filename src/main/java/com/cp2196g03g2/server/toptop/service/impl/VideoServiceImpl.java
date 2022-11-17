@@ -89,7 +89,7 @@ public class VideoServiceImpl implements IVideoService {
 			/* video.setProfessed(videoDto.isProfessed()); */
 			video.setProfessed(videoDto.isProfessed());
 			video.setHashTags(hashTags);
-
+			video.setUser(user);
 			// save video into database
 			return videoRepository.save(video);
 		} catch (Exception e) {
