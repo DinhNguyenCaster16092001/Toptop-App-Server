@@ -28,13 +28,7 @@ public class HashTagServiceImpl implements IHashTagService {
 	@Override
 	@Transactional
 	public List<HashTagModel> findByName(String name) {
-		List<HashTagModel> listHashTag = hashTagRepository.selectTotalViewHashTagByName(name);
-		listHashTag.stream().forEach(hashtag -> {
-			if(hashtag.getView() == null)
-				hashtag.setView(0L);
-		});
-		listHashTag.sort((h1, h2) -> h2.getView().compareTo(h1.getView()));
-		return listHashTag;
+		return hashTagRepository.findTopTenHashTagOrderByView(name);
 	}
 
 }

@@ -12,8 +12,14 @@ import com.cp2196g03g2.server.toptop.model.HashTagModel;
 public interface IHashTagRepository extends JpaRepository<HashTag, Long>{
 	HashTag findByName(String name);
 	
-	@Query("SELECT new com.cp2196g03g2.server.toptop.model.HashTagModel(h.id,h.name,SUM(v.view)) " + 
-	"FROM HashTag h LEFT JOIN h.videos v WHERE (h.name LIKE :keyword%) " +
-	"GROUP BY h.name")
-	List<HashTagModel> selectTotalViewHashTagByName(@Param("keyword") String keyword);
+
+	@Query(value = "SELECT h.id, h.name, COALESCE(SUM(DISTINCT v.view),0) as views  FROM tbl_hashtag h " + 
+			"LEFT JOIN tbl_videos_hashtag vh " + 
+			"ON h.id = vh.video_id " + 
+			"LEFT JOIN tbl_video v " + 
+			"ON vh.video_id = v.id " + 
+			"WHERE h.name LIKE :name% " + 
+			"GROUP BY h.id, h.name " + 
+			"ORDER BY views DESC LIMIT 10", nativeQuery = true)
+	List<HashTagModel> findTopTenHashTagOrderByView(@Param("name") String name);
 }

@@ -22,13 +22,11 @@ public class HashTagRepositoryTest {
 	
 	@Test
 	public void testHashTag() {
-		HashTag hashTag = hashTagRepository.findByName("TetHungKhoi");
-		System.out.println();
+		List<HashTagModel> list = hashTagRepository.findTopTenHashTagOrderByView("hini");
+		for (HashTagModel hashTagModel : list) {
+			System.out.println(hashTagModel.getName() + " " + hashTagModel.getViews());
+		}
 	}
 	
-	@Test
-	public void testHashTagCountByView() {
-		List<HashTagModel> model = hashTagRepository.selectTotalViewHashTagByName("Tet");
-		model.stream().forEach(hashtag -> System.out.println(hashtag.toString()));
-	}
+	
 }
