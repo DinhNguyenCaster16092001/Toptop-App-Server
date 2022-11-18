@@ -28,9 +28,6 @@ public class Message {
 	@Column
 	private String content;
 	
-	@Column
-	private boolean status;
-	
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
 	@JsonSerialize(as = Date.class)
@@ -55,7 +52,6 @@ public class Message {
 			ApplicationUser recciveUser) {
 		this.id = id;
 		this.content = content;
-		this.status = status;
 		this.createdDate = createdDate;
 		this.senderUser = senderUser;
 		this.recciveUser = recciveUser;
@@ -84,22 +80,6 @@ public class Message {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
-
-
-
-	public boolean isStatus() {
-		return status;
-	}
-
-
-
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-
 
 
 	public Date getCreatedDate() {
@@ -142,13 +122,16 @@ public class Message {
 	}
 
 
-
-
 	@Override
 	public String toString() {
-		return "Message [id=" + id + ", content=" + content + ", status=" + status + ", createdDate=" + createdDate
-				+ ", senderUser=" + senderUser + ", recciveUser=" + recciveUser + "]";
+		return "Message [id=" + id + ", content=" + content + ", createdDate=" + createdDate + ", senderUser="
+				+ senderUser + ", recciveUser=" + recciveUser + "]";
 	}
+
+
+
+
+	
 	
 	
 	

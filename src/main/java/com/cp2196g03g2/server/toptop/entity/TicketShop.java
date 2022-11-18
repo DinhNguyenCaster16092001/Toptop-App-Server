@@ -40,9 +40,6 @@ public class TicketShop {
 	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 	
-	@Column(name = "reply", columnDefinition = "TEXT")
-	private String reply;
-	
 	@Column(name = "status")
 	@Enumerated(EnumType.ORDINAL)
 	private TicketStatus status;
@@ -61,18 +58,16 @@ public class TicketShop {
 	}
 
 
-	public TicketShop(Integer id, String content, String reply, TicketStatus status, Date createdDate) {
+	public TicketShop(Integer id, String content, TicketStatus status, Date createdDate) {
 		this.id = id;
 		this.content = content;
-		this.reply = reply;
 		this.status = status;
 		this.createdDate = createdDate;
 	}
 	
 
-	public TicketShop(String content, String reply, TicketStatus status) {
+	public TicketShop(String content, TicketStatus status) {
 		this.content = content;
-		this.reply = reply;
 		this.status = status;
 	}
 
@@ -95,17 +90,6 @@ public class TicketShop {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
-
-	public String getReply() {
-		return reply;
-	}
-
-
-	public void setReply(String reply) {
-		this.reply = reply;
-	}
-
 
 	public TicketStatus getStatus() {
 		return status;
@@ -136,8 +120,11 @@ public class TicketShop {
 
 	@Override
 	public String toString() {
-		return "TicketShop [id=" + id + ", content=" + content + ", reply=" + reply + ", status=" + status
-				+ ", createdDate=" + createdDate + "]";
+		return "TicketShop [id=" + id + ", content=" + content + ", status=" + status + ", createdDate=" + createdDate
+				+ ", user=" + user + "]";
 	}
+
+
+	
 
 }

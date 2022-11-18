@@ -101,7 +101,6 @@ public class TicketShopServiceImpl implements ITicketShopService {
 			TicketShop ticketShop = ticketShopRepository.findById(dto.getId()).
 					orElseThrow(() -> new NotFoundException("Cannot found Ticket have id" + dto.getId()));	
 			ticketShop.setStatus(convertIntToTicketStatus(dto.getStatus()));
-			ticketShop.setReply(dto.getReply());
 			return ticketShopRepository.save(ticketShop);
 		}catch (Exception e) {
 			throw new InternalServerException(e.getMessage());

@@ -7,4 +7,5 @@ public class AppConstants {
     public static final String DEFAULT_SORT_DIRECTION = "asc";
     public static final String DEFAULT_KEYWORD = "";
     public static final String DEFAULT_STATUS = "1";
+    public static final String DEFAULT_PROFESSED = "true";
 }

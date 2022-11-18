@@ -156,35 +156,7 @@ public class CommentServiceImpl implements ICommentService {
 		return commentPage;
 	}
 
-	@Override
-	@Transactional
-	public Comment likeComment(LikeDto dto) {
-		// get user information
-		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
 
-		// get comment information
-		Comment comment = commentRepository.findById(dto.getCommenId()).get();
-
-		Long currentNumberLike = comment.getHeart() != null ? comment.getHeart() : 0;
-		if (dto.isStatus())
-			currentNumberLike += 1;
-		else
-			currentNumberLike -= 1;
-		
-		if (currentNumberLike < 0)
-			currentNumberLike = 0L;
-		
-		comment.setHeart(currentNumberLike);
-
-		// ignore notification when user is owner that comment
-		if (!ignoreOwnerComment(user, comment)) {
-			Notification notification = new Notification(comment.getUser(), user, comment.getVideo(), comment, false,
-					false, 6);
-			notificationService.createNotification(notification);
-		}
-
-		return commentRepository.save(comment);
-	}
 
 	private boolean ignoreOwnerComment(ApplicationUser user, Comment comment) {
 		return user.getId().equals(comment.getUser().getId());

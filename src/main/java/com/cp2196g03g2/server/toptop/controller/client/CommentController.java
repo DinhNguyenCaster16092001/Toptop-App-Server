@@ -47,11 +47,6 @@ public class CommentController {
 	}
 	
 	
-	@PutMapping
-	public Comment likeComment(@RequestBody LikeDto dto) {
-		return commentService.likeComment(dto);
-	}
-
 	@GetMapping("/children/{parentId}")
 	public PagableObject<Comment> findAllChildrendComment(@PathVariable("parentId") Long parentId,
 			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,

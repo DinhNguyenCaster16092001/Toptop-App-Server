@@ -235,16 +235,14 @@ public class VideoServiceImpl implements IVideoService {
 	}
 
 	@Override
-	public PagableObject<Video> findVideoByUserId(PagingRequest request, String userId) {
+	public PagableObject<Video> findVideoByUserId(PagingRequest request, String userId, boolean professed) {
 		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
 				? Sort.by(request.getSortBy()).ascending()
 				: Sort.by(request.getSortBy()).descending();
 
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 
-		ApplicationUser user = userRepository.findById(userId).get();
-		
-		Page<Video> videos = videoRepository.findByUser(user, pageable);
+		Page<Video> videos = videoRepository.findByUserAndProfessed(userId, professed, pageable);
 
 		List<Video> listOfVideos = videos.getContent();
 
@@ -275,7 +273,6 @@ public class VideoServiceImpl implements IVideoService {
 
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 
-		
 		Page<Video> videos = videoRepository.findByMusicUrl(music, pageable);
 
 		List<Video> listOfVideos = videos.getContent();
@@ -297,6 +294,15 @@ public class VideoServiceImpl implements IVideoService {
 		videoPage.setLast(videos.isLast());
 
 		return videoPage;
+	}
+
+	@Override
+	public void deleteVideoById(Long id) {
+		Video video = videoRepository.findById(id).get();
+
+		video.getHashTags().removeAll(video.getHashTags());
+
+		videoRepository.delete(video);
 	};
 
 }

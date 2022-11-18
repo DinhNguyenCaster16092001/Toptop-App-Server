@@ -3,6 +3,7 @@ package com.cp2196g03g2.server.toptop.controller.client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cp2196g03g2.server.toptop.constant.AppConstants;
+import com.cp2196g03g2.server.toptop.dto.BooleanResult;
 import com.cp2196g03g2.server.toptop.dto.HeartDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
@@ -63,12 +65,13 @@ public class VideoController {
 	
 	@GetMapping("/watch/user/{id}")
 	public PagableObject<Video> findVideoByUserId(@PathVariable String id,
+			@RequestParam(value = "professed",required = false) boolean professed,
 			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
 			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
 			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
 		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
-		return videoService.findVideoByUserId(request, id);
+		return videoService.findVideoByUserId(request, id, professed);
 	}
 	
 	@GetMapping("/watch/music/{music}")
@@ -91,6 +94,8 @@ public class VideoController {
 		return videoService.updateHeartVideo(dto);
 	}
 	
+		
+	
 	@PutMapping("/share/{id}")
 	public Video updateHeartVideo(@PathVariable Long id) {
 		return videoService.updateShareVideo(id);
@@ -103,5 +108,10 @@ public class VideoController {
 		return videoService.save(videoDto);
 	}
 	
+	
+	@DeleteMapping("/{id}")
+	public void deleteVideoById(@PathVariable Long id) {
+		videoService.deleteVideoById(id);
+	}
 	
 }

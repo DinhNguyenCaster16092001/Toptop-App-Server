@@ -36,8 +36,7 @@ public class Comment {
 	private String content;
 	
 	
-	@Column
-	private Long heart;
+	
 	
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
@@ -74,19 +73,6 @@ public class Comment {
 		this.user = user;
 		this.video = video;
 		this.parent = parent;
-	}
-
-	public Comment(Long id, String content, Long heart, Date createdDate, ApplicationUser user, Video video,
-			Comment parent, int childrenTotal, List<Comment> children) {
-		this.id = id;
-		this.content = content;
-		this.heart = heart;
-		this.createdDate = createdDate;
-		this.user = user;
-		this.video = video;
-		this.parent = parent;
-		this.childrenTotal = childrenTotal;
-		this.children = children;
 	}
 
 	public Long getId() {
@@ -160,14 +146,7 @@ public class Comment {
 		this.childrenTotal = childrenTotal;
 	}
 	
-	public Long getHeart() {
-		return heart;
-	}
-
-	public void setHeart(Long heart) {
-		this.heart = heart;
-	}
-
+	
 	@Override
 	public String toString() {
 		return "Comment [id=" + id + ", content=" + content + ", createdDate=" + createdDate + ", user=" + user

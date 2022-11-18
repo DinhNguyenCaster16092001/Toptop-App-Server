@@ -47,7 +47,6 @@ public class MessageServiceImpl implements IMessageService{
 		message.setContent(dto.getContent());
 		message.setSenderUser(senderUser);
 		message.setRecciveUser(recciveUser);
-		message.setStatus(true);
 		
 		return messageRepository.save(message);
 	}
