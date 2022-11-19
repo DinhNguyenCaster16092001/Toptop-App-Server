@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -34,6 +35,7 @@ public class EmailServiceImpl {
 		this.templateEngine = templateEngine;
 	}
 
+	@Async
 	public void sendMail(String to, String subject, String template, HashMap<String, Object> model)
 			 {
 		try {

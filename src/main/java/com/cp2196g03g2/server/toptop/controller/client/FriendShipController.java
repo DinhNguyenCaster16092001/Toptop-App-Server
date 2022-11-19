@@ -39,6 +39,11 @@ public class FriendShipController {
 	}
 	
 	
+	@GetMapping
+	public boolean findAllFriend(@RequestParam(required = true)String requestId,@RequestParam(required = true) String acceptId){
+		return friendShipService.isYouFollowUser(requestId, acceptId);
+	}
+	
 	@GetMapping("/tag/{userId}")
 	public List<ApplicationUser> getListFrienByTag(@PathVariable String userId, 
 			@RequestParam(name = "tagName", required = false) String tagName){
@@ -49,5 +54,8 @@ public class FriendShipController {
 	public void unFollowingUser(@RequestBody FriendShipDto dto) {
 		friendShipService.deleteByRequestId(dto.getRequestId(), dto.getAccetpId());
 	}
+	
+	
+	
 }
 

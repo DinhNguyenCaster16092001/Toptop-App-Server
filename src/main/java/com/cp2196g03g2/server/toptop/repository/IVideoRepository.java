@@ -21,8 +21,6 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 	@Query("SELECT v FROM Video v WHERE v.user.id=:userId AND v.professed =:professed")
 	Page<Video> findByUserAndProfessed(@Param("userId") String userId,@Param("professed")boolean professed,Pageable pageable);
 	
-	Page<Video> findByMusicUrl(String musicUrl, Pageable pageable);
-	
 	@Query("SELECT SUM(v.view) FROM Video v WHERE v.user.id =:userid")
 	Long countViewByUserId(@Param("userid") String userid);
 	

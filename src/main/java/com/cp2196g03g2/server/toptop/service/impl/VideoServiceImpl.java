@@ -2,6 +2,7 @@ package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -81,7 +82,6 @@ public class VideoServiceImpl implements IVideoService {
 			Video video = new Video();
 			video.setUrl(videoDto.getVideoUrl());
 			video.setTitle(videoDto.getTitle());
-			video.setMusicUrl(videoDto.getMusic());
 			video.setHeart(0L);
 			video.setEnableComment(videoDto.isEnableComment());
 			video.setView(0L);
@@ -265,36 +265,6 @@ public class VideoServiceImpl implements IVideoService {
 		return videoPage;
 	}
 
-	@Override
-	public PagableObject<Video> findVideoByMusic(PagingRequest request, String music) {
-		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(request.getSortBy()).ascending()
-				: Sort.by(request.getSortBy()).descending();
-
-		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
-
-		Page<Video> videos = videoRepository.findByMusicUrl(music, pageable);
-
-		List<Video> listOfVideos = videos.getContent();
-
-		listOfVideos.stream().forEach(video -> {
-			Long countComment = commentRepository.countByVideoId(video.getId());
-			if (countComment != null)
-				video.setComment(countComment);
-			else
-				video.setComment(0L);
-		});
-
-		PagableObject<Video> videoPage = new PagableObject<>();
-		videoPage.setData(listOfVideos);
-		videoPage.setPageNo(request.getPageNo());
-		videoPage.setPageSize(request.getPageSize());
-		videoPage.setTotalElements(videos.getTotalElements());
-		videoPage.setTotalPages(videos.getTotalPages());
-		videoPage.setLast(videos.isLast());
-
-		return videoPage;
-	}
 
 	@Override
 	public void deleteVideoById(Long id) {
@@ -303,6 +273,16 @@ public class VideoServiceImpl implements IVideoService {
 		video.getHashTags().removeAll(video.getHashTags());
 
 		videoRepository.delete(video);
+	}
+
+	@Override
+	public boolean isUserHeartBefore(Long videoId, String userId) {
+		ApplicationUser user = userRepository.findById(userId).get();
+		Video video = videoRepository.findById(videoId).get();		
+			if(user != null)
+				if(user.getFavouriteVideos().contains(video) == true)
+					return true;
+		return false;
 	};
 
 }

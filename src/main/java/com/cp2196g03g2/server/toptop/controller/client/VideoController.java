@@ -73,16 +73,7 @@ public class VideoController {
 		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
 		return videoService.findVideoByUserId(request, id, professed);
 	}
-	
-	@GetMapping("/watch/music/{music}")
-	public PagableObject<Video> findVideoByMusic(@PathVariable String music,
-			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
-		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
-		return videoService.findVideoByMusic(request, music);
-	}
+
 	
 	@PutMapping("/watch/{id}")
 	public Video updateViewVideo(@PathVariable Long id) {
@@ -92,6 +83,12 @@ public class VideoController {
 	@PutMapping("/heart")
 	public Video updateHeartVideo(@RequestBody HeartDto dto) {
 		return videoService.updateHeartVideo(dto);
+	}
+	
+	
+	@PutMapping("/heart/{videoId}/user/{userId}")
+	public boolean updateHeartVideo(@PathVariable Long videoId, String userId) {
+		return videoService.isUserHeartBefore(videoId, userId);
 	}
 	
 		

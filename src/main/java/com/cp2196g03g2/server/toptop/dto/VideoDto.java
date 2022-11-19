@@ -7,7 +7,6 @@ public class VideoDto {
 	private Long id;
 	private String title;
 	private String videoUrl;
-	private String music;
 	private boolean enableComment;
 	private boolean professed;
 	private String userid;
@@ -18,12 +17,11 @@ public class VideoDto {
 
 	
 
-	public VideoDto(Long id, String title, String videoUrl, String music, boolean enableComment, boolean professed,
+	public VideoDto(Long id, String title, String videoUrl, boolean enableComment, boolean professed,
 			String userid, String[] hashTag) {
 		this.id = id;
 		this.title = title;
 		this.videoUrl = videoUrl;
-		this.music = music;
 		this.enableComment = enableComment;
 		this.professed = professed;
 		this.userid = userid;
@@ -33,11 +31,10 @@ public class VideoDto {
 
 	
 
-	public VideoDto(String title, String videoUrl, String music, boolean enableComment, boolean professed,
+	public VideoDto(String title, String videoUrl, boolean enableComment, boolean professed,
 			String userid, String[] hashTag) {
 		this.title = title;
 		this.videoUrl = videoUrl;
-		this.music = music;
 		this.enableComment = enableComment;
 		this.professed = professed;
 		this.userid = userid;
@@ -68,14 +65,6 @@ public class VideoDto {
 
 	public void setVideoUrl(String videoUrl) {
 		this.videoUrl = videoUrl;
-	}
-
-	public String getMusic() {
-		return music;
-	}
-
-	public void setMusic(String music) {
-		this.music = music;
 	}
 
 	public boolean isEnableComment() {
@@ -115,11 +104,14 @@ public class VideoDto {
 	}
 
 
+
 	@Override
 	public String toString() {
-		return "VideoDto [id=" + id + ", title=" + title + ", videoUrl=" + videoUrl + ", music=" + music
-				+ ", enableComment=" + enableComment + ", professed=" + professed + ", userid=" + userid + ", hashTag="
-				+ Arrays.toString(hashTag) + "]";
+		return "VideoDto [id=" + id + ", title=" + title + ", videoUrl=" + videoUrl + ", enableComment=" + enableComment
+				+ ", professed=" + professed + ", userid=" + userid + ", hashTag=" + Arrays.toString(hashTag) + "]";
 	}
+
+
+	
 
 }

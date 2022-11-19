@@ -36,9 +36,6 @@ public class Video {
 	@Column(name = "video_url", nullable = false)
 	private String url;
 	
-	@Column(name = "music", nullable = false)
-	private String musicUrl; 
-	
 	@Column(name = "enable_comment")
 	private boolean enableComment = true;
 	
@@ -76,23 +73,21 @@ public class Video {
 	}
 
 
-	public Video(Long id, String title, String url, String musicUrl,boolean enableComment, boolean status) {
+	public Video(Long id, String title, String url,boolean enableComment, boolean status) {
 		this.id = id;
 		this.title = title;
 		this.url = url;
-		this.musicUrl = musicUrl;
 		this.enableComment = enableComment;
 		this.status = status;
 	}
 
 	
 
-	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
+	public Video(Long id, String title, String url, boolean enableComment, boolean status, Long view,
 			Long heart, boolean professed, List<HashTag> hashTags) {
 		this.id = id;
 		this.title = title;
 		this.url = url;
-		this.musicUrl = musicUrl;
 		this.enableComment = enableComment;
 		this.status = status;
 		this.view = view;
@@ -102,12 +97,11 @@ public class Video {
 	}
 
 
-	public Video(Long id, String title, String url, String musicUrl, boolean enableComment, boolean status, Long view,
+	public Video(Long id, String title, String url, boolean enableComment, boolean status, Long view,
 			Long heart, boolean professed, Long comment, ApplicationUser user, List<HashTag> hashTags) {
 		this.id = id;
 		this.title = title;
 		this.url = url;
-		this.musicUrl = musicUrl;
 		this.enableComment = enableComment;
 		this.status = status;
 		this.view = view;
@@ -145,15 +139,6 @@ public class Video {
 		this.url = url;
 	}
 
-
-
-	public String getMusicUrl() {
-		return musicUrl;
-	}
-
-	public void setMusicUrl(String musicUrl) {
-		this.musicUrl = musicUrl;
-	}
 
 	public boolean isEnableComment() {
 		return enableComment;
@@ -254,10 +239,13 @@ public class Video {
 
 	@Override
 	public String toString() {
-		return "Video [id=" + id + ", title=" + title + ", url=" + url + ", musicUrl=" + musicUrl + ", enableComment="
-				+ enableComment + ", status=" + status + ", view=" + view + ", heart=" + heart + ", user=" + user
-				+ ", hashTags=" + hashTags + "]";
+		return "Video [id=" + id + ", title=" + title + ", url=" + url + ", enableComment=" + enableComment
+				+ ", status=" + status + ", view=" + view + ", heart=" + heart + ", share=" + share + ", professed="
+				+ professed + ", comment=" + comment + ", user=" + user + ", hashTags=" + hashTags + "]";
 	}
+
+
+	
 
 
 }
