@@ -13,8 +13,18 @@ public class ReportVideoDto {
 	private Long videoId;
 
 
-	public ReportVideoDto(Long id, String content, String userId, Long videoId) {
-		this.id = id;
+	public ReportVideoDto() {
+
+	}
+
+	public ReportVideoDto(String content, String userId, String replyUserId, Long videoId) {
+		this.content = content;
+		this.userId = userId;
+		this.replyUserId = replyUserId;
+		this.videoId = videoId;
+	}
+
+	public ReportVideoDto(String content, String userId, Long videoId) {
 		this.content = content;
 		this.userId = userId;
 		this.videoId = videoId;
