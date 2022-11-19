@@ -87,7 +87,7 @@ public class VideoController {
 	
 	
 	@GetMapping("/heart/{videoId}/user/{userId}")
-	public boolean updateHeartVideo(@PathVariable Long videoId, String userId) {
+	public boolean updateHeartVideo(@PathVariable Long videoId, @PathVariable  String userId) {
 		return videoService.isUserHeartBefore(videoId, userId);
 	}
 	
