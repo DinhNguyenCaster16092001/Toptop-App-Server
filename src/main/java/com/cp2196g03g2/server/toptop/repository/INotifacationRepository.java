@@ -2,6 +2,8 @@ package com.cp2196g03g2.server.toptop.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +34,10 @@ public interface INotifacationRepository extends JpaRepository<Notification, Int
 	Notification getHeartVideoNotificationExist(@Param("fromId") String fromId, @Param("toId") String toId, @Param("videoId") Long videoId);
 	
 
+	@Query("SELECT n FROM Notification n WHERE n.userTo.id =:userId ORDER BY n.createdDate DESC")
+	Page<Notification> findAllNotificationByToUserId(@Param("userId") String userId, Pageable pageable);
+
+
+	@Query("SELECT n FROM Notification n WHERE n.userTo.id =:userId AND n.readed = false ORDER BY n.createdDate DESC")
+	Page<Notification> findAllNotificationByToUserIdAndNotReaded(@Param("userId") String userId, Pageable pageable);
 }

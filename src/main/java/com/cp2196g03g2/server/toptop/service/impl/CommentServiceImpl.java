@@ -104,14 +104,22 @@ public class CommentServiceImpl implements ICommentService {
 
 		Comment childComment = new Comment(commentDto.getContent(), new Date(), user, video, parentComment);
 
-		// commet to database
+		// comment to database
 		Comment savedCommet = commentRepository.save(childComment);
 		if (savedCommet != null) {
 			Set<String> userIds = getListUserId(parentComment, childComment);
 			if (userIds.size() > 0) {
 				for (String userTo : userIds) {
-					Notification notification = new Notification(userRepository.findById(userTo).get(), user, video,
-							parentComment, false, false, 3);
+					Notification notification = new Notification(
+							userRepository.findById(userTo).get(), 
+							user, 
+							childComment.getContent(),
+							video,
+							parentComment, 
+							false, 
+							false, 
+							3, 
+							new Date());
 					notification.setContent(childComment.getContent());
 					notificationService.createNotification(notification);
 				}

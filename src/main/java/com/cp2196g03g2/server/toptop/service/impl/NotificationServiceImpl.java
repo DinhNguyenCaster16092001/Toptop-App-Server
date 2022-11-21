@@ -6,10 +6,18 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 
+import com.cp2196g03g2.server.toptop.dto.PagableObject;
+import com.cp2196g03g2.server.toptop.dto.PagingRequest;
+import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Notification;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
 import com.cp2196g03g2.server.toptop.repository.INotifacationRepository;
@@ -89,5 +97,44 @@ public class NotificationServiceImpl implements INotificationService {
 		notifacationRepository.delete(notification);
 	}
 
-	
+	@Override
+	public PagableObject<Notification> findAllNotificationByToUserId(String userId, boolean readed, PagingRequest request) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+
+		// create Pageable instance
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+		
+		Page<Notification> notifications = null;
+		
+		if(readed == false) 
+			notifications = notifacationRepository.findAllNotificationByToUserIdAndNotReaded(userId, pageable);
+		else
+			notifications = notifacationRepository.findAllNotificationByToUserId(userId ,pageable);
+
+		List<Notification> listOfNotifications = notifications.getContent();
+		
+		setTimeAgoForNotification(listOfNotifications);
+
+		
+
+		
+		PagableObject<Notification> notificationPage = new PagableObject<>();
+		notificationPage.setData(listOfNotifications);
+		notificationPage.setPageNo(request.getPageNo());
+		notificationPage.setPageSize(request.getPageSize());
+		notificationPage.setTotalElements(notifications.getTotalElements());
+		notificationPage.setTotalPages(notifications.getTotalPages());
+		notificationPage.setLast(notifications.isLast());
+
+		return notificationPage;
+	}
+
+	private void setTimeAgoForNotification(List<Notification> notifications) {
+		PrettyTime prettyTime = new PrettyTime();
+		notifications.forEach(n -> {
+			n.setPastTime(prettyTime.format(n.getCreatedDate()));
+		});
+	}
 }

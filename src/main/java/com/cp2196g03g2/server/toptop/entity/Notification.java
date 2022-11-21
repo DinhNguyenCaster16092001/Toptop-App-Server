@@ -14,10 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.cp2196g03g2.server.toptop.enums.NotificationType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -56,6 +58,15 @@ public class Notification {
 	
 	@Column(name = "type")
 	private int notificationType;
+	
+	@Transient
+	private String pastTime;
+	
+	@Transient
+	private Long videoId;
+	
+	@Transient
+	private Long commentId;
 
 	
 	@CreationTimestamp
@@ -146,9 +157,6 @@ public class Notification {
 	}
 
 	
-	
-
-
 	public int getNotificationType() {
 		return notificationType;
 	}
@@ -159,6 +167,7 @@ public class Notification {
 	}
 
 
+	@JsonBackReference
 	public Video getFromVideo() {
 		return fromVideo;
 	}
@@ -167,7 +176,7 @@ public class Notification {
 		this.fromVideo = fromVideo;
 	}
 	
-	
+	@JsonBackReference
 	public Comment getFromComment() {
 		return fromComment;
 	}
@@ -179,6 +188,22 @@ public class Notification {
 	
 	
 	
+	public Long getVideoId() {
+		return this.fromVideo.getId();
+	}
+
+	public void setVideoId(Long videoId) {
+		this.videoId = videoId;
+	}
+
+
+	public Long getCommentId() {
+		return this.fromComment.getId();
+	}
+
+	public void setCommentId(Long commentId) {
+		this.commentId = commentId;
+	}
 
 	public String getContent() {
 		return content;
@@ -194,6 +219,15 @@ public class Notification {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+	
+	
+	public String getPastTime() {
+		return pastTime;
+	}
+
+	public void setPastTime(String pastTime) {
+		this.pastTime = pastTime;
 	}
 
 	@Override
