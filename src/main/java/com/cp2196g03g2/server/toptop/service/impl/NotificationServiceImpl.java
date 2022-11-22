@@ -56,7 +56,6 @@ public class NotificationServiceImpl implements INotificationService {
 	
 
 	@Override
-	@Transactional
 	public Flux<ServerSentEvent<List<Notification>>> getNotificationsByUserToID(String userId) {
 		if (userId != null) {
             return Flux.interval(Duration.ofSeconds(1))
@@ -74,6 +73,7 @@ public class NotificationServiceImpl implements INotificationService {
 		List<Notification> notifis = notifacationRepository.findByUserToAndDeliveredFalse(userID);
 		notifis.forEach(x -> x.setDelivered(true));
 		notifacationRepository.saveAll(notifis);
+		setTimeAgoForNotification(notifis);
 		return notifis;
 	}
 
