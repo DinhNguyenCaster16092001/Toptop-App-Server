@@ -4,7 +4,7 @@ public class ReportVideoDto {
 
 	private Long id;
 	
-	private String content;
+	private Integer typeId;
 	
 	private String userId;
 	
@@ -17,18 +17,28 @@ public class ReportVideoDto {
 
 	}
 
-	public ReportVideoDto(String content, String userId, String replyUserId, Long videoId) {
-		this.content = content;
+	
+
+	public ReportVideoDto(Long id, Integer typeId, String userId, String replyUserId, Long videoId) {
+		this.id = id;
+		this.typeId = typeId;
+		this.userId = userId;
+		this.replyUserId = replyUserId;
+		this.videoId = videoId;
+	}
+	
+	
+	
+
+
+	public ReportVideoDto(Integer typeId, String userId, String replyUserId, Long videoId) {
+		this.typeId = typeId;
 		this.userId = userId;
 		this.replyUserId = replyUserId;
 		this.videoId = videoId;
 	}
 
-	public ReportVideoDto(String content, String userId, Long videoId) {
-		this.content = content;
-		this.userId = userId;
-		this.videoId = videoId;
-	}
+
 
 	public Long getId() {
 		return id;
@@ -38,13 +48,17 @@ public class ReportVideoDto {
 		this.id = id;
 	}
 
-	public String getContent() {
-		return content;
+	
+	public Integer getTypeId() {
+		return typeId;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
 	}
+
+
 
 	public String getUserId() {
 		return userId;

@@ -18,6 +18,7 @@ import com.cp2196g03g2.server.toptop.dto.BooleanResult;
 import com.cp2196g03g2.server.toptop.dto.HeartDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
+import com.cp2196g03g2.server.toptop.dto.UpdateVideoDto;
 import com.cp2196g03g2.server.toptop.dto.VideoDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Video;
@@ -98,6 +99,11 @@ public class VideoController {
 		return videoService.updateShareVideo(id);
 	}
 	
+	@PutMapping("/{id}")
+	public Video updateVideo(@PathVariable Long id , @RequestBody UpdateVideoDto dto) {
+		dto.setId(id);
+		return videoService.updateEnableCommentProfessedVideo(dto);
+	}
 	
 	@PostMapping("/interactive")
 	@PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_SHOP_USER')")

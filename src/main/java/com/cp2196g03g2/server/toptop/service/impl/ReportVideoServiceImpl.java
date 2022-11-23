@@ -15,9 +15,11 @@ import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ReportVideoDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.entity.ReportType;
 import com.cp2196g03g2.server.toptop.entity.ReportVideo;
 import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
+import com.cp2196g03g2.server.toptop.repository.IReportTypeRepository;
 import com.cp2196g03g2.server.toptop.repository.IReportVideoRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.repository.IVideoRepository;
@@ -35,21 +37,9 @@ public class ReportVideoServiceImpl implements IReportVideoService{
 	@Autowired
 	private IReportVideoRepository reportVideoRepository;
 	
-	@Override
-	@Transactional
-	public ReportVideo save(ReportVideoDto dto) {
-		try {
-			ApplicationUser user = userRepository.findById(dto.getUserId()).get();
-			Video video = videoRepository.findById(dto.getVideoId()).get();
-			
-			ReportVideo reportVideo = new ReportVideo(dto.getContent(), 
-										false, user, null, video);
-		
-			return reportVideoRepository.save(reportVideo);
-		}catch (Exception e) {
-			throw new InternalServerException(e.getMessage());
-		}
-	}
+	@Autowired
+	private IReportTypeRepository reportTypeRepository;
+	
 
 	@Override
 	public PagableObject<ReportVideo> findAllByPage(PagingRequest request) {
@@ -85,6 +75,21 @@ public class ReportVideoServiceImpl implements IReportVideoService{
 		video.setStatus(false);
 		videoRepository.save(video);
 		return reportVideoRepository.save(reportVideo);
+	}
+
+	@Override
+	public ReportVideo save(ReportVideoDto dto) {
+		try {
+			ApplicationUser user = userRepository.findById(dto.getUserId()).get();
+			Video video = videoRepository.findById(dto.getVideoId()).get();
+			ReportType type = reportTypeRepository.findById(dto.getTypeId()).get();
+		
+			ReportVideo reportVideo = new ReportVideo(false, user, type, null, video);
+			
+			return reportVideoRepository.save(reportVideo);
+		}catch (Exception e) {
+			throw new InternalServerException(e.getMessage());
+		}
 	}
 
 

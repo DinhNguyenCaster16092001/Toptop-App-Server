@@ -21,14 +21,15 @@ public class ReportVideo {
 	private Long id;
 	
 	@Column
-	private String content;
-	
-	@Column
 	private boolean status;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
 	private ApplicationUser user;
+	
+	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	@JoinColumn(name = "typeId")
+	private ReportType reportType;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "replyToId")
@@ -42,26 +43,27 @@ public class ReportVideo {
 	}
 
 	
-
-	public ReportVideo(Long id, String content, boolean status, ApplicationUser user, ApplicationUser replyUser,
+	public ReportVideo(Long id, boolean status, ApplicationUser user, ReportType reportType, ApplicationUser replyUser,
 			Video video) {
 		this.id = id;
-		this.content = content;
 		this.status = status;
 		this.user = user;
+		this.reportType = reportType;
 		this.replyUser = replyUser;
 		this.video = video;
 	}
 
-
-	public ReportVideo(String content, boolean status, ApplicationUser user, ApplicationUser replyUser, Video video) {
-		this.content = content;
+	
+	public ReportVideo(boolean status, ApplicationUser user, ReportType reportType, ApplicationUser replyUser,
+			Video video) {
 		this.status = status;
 		this.user = user;
+		this.reportType = reportType;
 		this.replyUser = replyUser;
 		this.video = video;
 	}
 
+	
 
 	public Long getId() {
 		return id;
@@ -69,14 +71,6 @@ public class ReportVideo {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
 	}
 
 	public boolean isStatus() {
@@ -90,6 +84,16 @@ public class ReportVideo {
 	public ApplicationUser getUser() {
 		return user;
 	}
+
+	
+	public ReportType getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(ReportType reportType) {
+		this.reportType = reportType;
+	}
+
 
 	public void setUser(ApplicationUser user) {
 		this.user = user;
@@ -113,11 +117,14 @@ public class ReportVideo {
 		this.video = video;
 	}
 
+
 	@Override
 	public String toString() {
-		return "ReportVideo [id=" + id + ", content=" + content + ", status=" + status + ", user=" + user
-				+ ", replyUser=" + replyUser + "]";
+		return "ReportVideo [id=" + id + ", status=" + status + ", user=" + user + ", reportType=" + reportType
+				+ ", replyUser=" + replyUser + ", video=" + video + "]";
 	}
+
+	
 	
 	
 }

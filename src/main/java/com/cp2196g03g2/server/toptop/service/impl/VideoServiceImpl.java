@@ -18,6 +18,7 @@ import com.cp2196g03g2.server.toptop.dto.HeartDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ReportVideoDto;
+import com.cp2196g03g2.server.toptop.dto.UpdateVideoDto;
 import com.cp2196g03g2.server.toptop.dto.VideoDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.HashTag;
@@ -283,6 +284,14 @@ public class VideoServiceImpl implements IVideoService {
 				if(user.getFavouriteVideos().contains(video) == true)
 					return true;
 		return false;
+	}
+
+	@Override
+	public Video updateEnableCommentProfessedVideo(UpdateVideoDto dto) {
+		Video video = videoRepository.findById(dto.getId()).get();
+		video.setEnableComment(dto.isEnableComment());
+		video.setProfessed(dto.isProfessed());	
+		return videoRepository.save(video);
 	};
 
 }
