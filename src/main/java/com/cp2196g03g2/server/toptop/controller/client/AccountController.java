@@ -84,6 +84,12 @@ public class AccountController {
 		return userService.activeUserByOtpCode(otpRequestDto.getOtp(), otpRequestDto.getId());
 	}
 	
+	@GetMapping("/alias/{alias}")
+	public ApplicationUser findByAlias(@PathVariable String alias) {
+		return userService.findByAlias(alias);
+	}
+	
+	
 	@GetMapping("/alias")
 	public BooleanResult existAlias(@RequestParam(value = "target", required = true) String alias, @RequestParam(value = "id", required = false) String id) {
 		ObjectKey objectKey = new ObjectKey(alias, id);
