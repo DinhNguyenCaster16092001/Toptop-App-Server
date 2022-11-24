@@ -118,8 +118,6 @@ public class NotificationServiceImpl implements INotificationService {
 		setTimeAgoForNotification(listOfNotifications);
 
 		
-
-		
 		PagableObject<Notification> notificationPage = new PagableObject<>();
 		notificationPage.setData(listOfNotifications);
 		notificationPage.setPageNo(request.getPageNo());

@@ -189,6 +189,9 @@ public class Notification {
 	
 	
 	public Long getVideoId() {
+		if(this.fromVideo == null) {
+			return null;
+		}
 		return this.fromVideo.getId();
 	}
 
@@ -198,6 +201,9 @@ public class Notification {
 
 
 	public Long getCommentId() {
+		if(this.fromComment == null) {
+			return null;
+		}
 		return this.fromComment.getId();
 	}
 
