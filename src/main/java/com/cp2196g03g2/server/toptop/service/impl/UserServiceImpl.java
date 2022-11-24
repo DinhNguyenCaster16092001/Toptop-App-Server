@@ -348,7 +348,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 				: Sort.by(request.getSortBy()).descending();
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 
-		Page<ApplicationUser> users = userRepository.findAllCustomerByPage(pageable);
+		Page<ApplicationUser> users = userRepository.findAllCustomerByPage(pageable, request.getKeyword());
 
 		List<ApplicationUser> listOfUsers = users.getContent();
 		

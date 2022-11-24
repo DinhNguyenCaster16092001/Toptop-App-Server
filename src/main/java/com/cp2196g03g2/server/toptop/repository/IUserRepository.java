@@ -31,8 +31,9 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String> 
 	@Query("SELECT COUNT(u.id) FROM ApplicationUser u WHERE u.role.id=5 AND u.isActive = true")
 	Long coutUserRoleCustomer();
 
-	@Query("SELECT u FROM ApplicationUser u WHERE u.role.id=5 AND u.isActive = true")
-	Page<ApplicationUser> findAllCustomerByPage(Pageable pageable);
+	@Query("SELECT u FROM ApplicationUser u WHERE (u.fullName LIKE %:keyword% OR "
+			+ "u.alias LIKE %:keyword%) " + "AND u.role.id IN (5,6)")
+	Page<ApplicationUser> findAllCustomerByPage(Pageable pageable, @Param("keyword") String keyword);
 
 	@Query(value = "SELECT COUNT(id) FROM tbl_user WHERE MONTH(created_date) = MONTH(CURRENT_DATE)", nativeQuery = true)
 	long getTotalNewUserOfCurrentMonth();

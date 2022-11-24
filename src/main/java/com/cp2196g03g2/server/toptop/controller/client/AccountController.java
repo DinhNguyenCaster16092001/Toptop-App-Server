@@ -1,24 +1,16 @@
 package com.cp2196g03g2.server.toptop.controller.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +25,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.cp2196g03g2.server.toptop.constant.AppConstants;
 import com.cp2196g03g2.server.toptop.dto.BooleanResult;
-import com.cp2196g03g2.server.toptop.dto.FavouriteVideoDto;
 import com.cp2196g03g2.server.toptop.dto.ObjectKey;
 import com.cp2196g03g2.server.toptop.dto.OtpRequestDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
@@ -41,14 +32,10 @@ import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
-import com.cp2196g03g2.server.toptop.entity.Role;
-import com.cp2196g03g2.server.toptop.entity.Video;
-import com.cp2196g03g2.server.toptop.repository.IFriendShipRepository;
 import com.cp2196g03g2.server.toptop.service.IFriendShipService;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 import com.cp2196g03g2.server.toptop.service.IVideoService;
 import com.cp2196g03g2.server.toptop.service.impl.EmailServiceImpl;
-import com.cp2196g03g2.server.toptop.service.impl.VideoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -87,6 +74,18 @@ public class AccountController {
 	@GetMapping("/alias/{alias}")
 	public ApplicationUser findByAlias(@PathVariable String alias) {
 		return userService.findByAlias(alias);
+	}
+	
+	
+	@GetMapping
+	public PagableObject<ApplicationUser> findAllByPage(
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@RequestParam(value = "keyword", defaultValue = AppConstants.DEFAULT_KEYWORD, required = false) String keyword) {
+		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir, keyword);
+		return userService.findAllCustomer(request);
 	}
 	
 	
