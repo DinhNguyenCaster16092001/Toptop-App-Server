@@ -21,8 +21,10 @@ import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Message;
+import com.cp2196g03g2.server.toptop.entity.Notification;
 import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.repository.IMessageRepository;
+import com.cp2196g03g2.server.toptop.repository.INotifacationRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.service.IMessageService;
 
@@ -34,6 +36,9 @@ public class MessageServiceImpl implements IMessageService{
 	
 	@Autowired
 	private IMessageRepository messageRepository;
+	
+	@Autowired
+	private INotifacationRepository notifacationRepository;
 	
 	@Override
 	@Transactional
@@ -47,6 +52,9 @@ public class MessageServiceImpl implements IMessageService{
 		message.setContent(dto.getContent());
 		message.setSenderUser(senderUser);
 		message.setRecciveUser(recciveUser);
+		Notification notification = new Notification(recciveUser, senderUser, null, null, false, false, 4);
+		
+		notifacationRepository.save(notification);
 		
 		return messageRepository.save(message);
 	}
