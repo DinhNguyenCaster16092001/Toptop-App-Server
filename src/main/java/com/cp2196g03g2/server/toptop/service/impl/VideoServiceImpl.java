@@ -183,7 +183,7 @@ public class VideoServiceImpl implements IVideoService {
 				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
 		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
-		Notification notification = new Notification(video.getUser(), user, null,video, null,false, false, 1, new Date());
+		Notification notification = new Notification(video.getUser(), user, null,video, null,false, false, 0, new Date());
 		if (dto.isStatus()) {
 			video.setHeart(currentHeart + 1);
 			user.addFavouriteVideo(video);

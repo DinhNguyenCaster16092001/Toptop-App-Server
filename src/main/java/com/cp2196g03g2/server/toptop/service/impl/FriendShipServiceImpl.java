@@ -51,7 +51,7 @@ public class FriendShipServiceImpl implements IFriendShipService {
 		FriendShip friendShip = new FriendShip(requestUser, acceptUser, false);
 
 		Notification notification = 
-		new Notification(acceptUser, requestUser, null, null, null,false, false, 4, new Date());
+		new Notification(acceptUser, requestUser, null, null, null,false, false, 3, new Date());
 
 		
 		

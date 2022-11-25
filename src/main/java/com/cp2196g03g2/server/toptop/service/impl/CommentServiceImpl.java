@@ -58,7 +58,7 @@ public class CommentServiceImpl implements ICommentService {
 		comment.setUser(user);
 		comment.setVideo(video);
 		Comment savedComment = commentRepository.save(comment);
-		Notification notification = new Notification(video.getUser(), user, video, savedComment, false, false, 2);
+		Notification notification = new Notification(video.getUser(), user, video, savedComment, false, false, 1);
 		notificationService.createNotification(notification);
 		return savedComment;
 	}
@@ -118,7 +118,7 @@ public class CommentServiceImpl implements ICommentService {
 							parentComment, 
 							false, 
 							false, 
-							3, 
+							2, 
 							new Date());
 					notification.setContent(childComment.getContent());
 					notificationService.createNotification(notification);
