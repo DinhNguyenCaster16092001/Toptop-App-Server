@@ -1,6 +1,7 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -50,7 +51,7 @@ public class FriendShipServiceImpl implements IFriendShipService {
 		FriendShip friendShip = new FriendShip(requestUser, acceptUser, false);
 
 		Notification notification = 
-		new Notification(acceptUser, requestUser, null, null, false, false, 4);
+		new Notification(acceptUser, requestUser, null, null, null,false, false, 4, new Date());
 
 		
 		

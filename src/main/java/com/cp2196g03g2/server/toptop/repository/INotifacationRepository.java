@@ -34,7 +34,8 @@ public interface INotifacationRepository extends JpaRepository<Notification, Int
 	Notification getHeartVideoNotificationExist(@Param("fromId") String fromId, @Param("toId") String toId, @Param("videoId") Long videoId);
 	
 
-	@Query("SELECT n FROM Notification n WHERE n.userTo.id =:userId ORDER BY n.createdDate DESC")
+	@Query(value="SELECT * FROM tbl_notification WHERE to_id =:userId " + 
+			"ORDER BY created_date desc", nativeQuery = true)
 	Page<Notification> findAllNotificationByToUserId(@Param("userId") String userId, Pageable pageable);
 
 

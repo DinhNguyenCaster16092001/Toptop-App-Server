@@ -136,4 +136,17 @@ public class NotificationServiceImpl implements INotificationService {
 			n.setPastTime(prettyTime.format(n.getCreatedDate()));
 		});
 	}
+	
+	private void setTimeAgoForNotification(Notification notifications) {
+		PrettyTime prettyTime = new PrettyTime();
+		notifications.setPastTime(prettyTime.format(notifications.getCreatedDate()));
+	}
+
+	@Override
+	public Notification updateNotification(Integer id) {
+		Notification notification = notifacationRepository.findById(id).get();
+		notification.setReaded(true);
+		setTimeAgoForNotification(notification);
+		return notifacationRepository.save(notification);
+	}
 }

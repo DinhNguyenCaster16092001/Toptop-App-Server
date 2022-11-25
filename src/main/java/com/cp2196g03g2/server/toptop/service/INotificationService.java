@@ -11,6 +11,7 @@ import com.cp2196g03g2.server.toptop.entity.Notification;
 import reactor.core.publisher.Flux;
 
 public interface INotificationService {
+	Notification updateNotification(Integer id);
 	Notification getFollowNotifcation(Notification notification);
 	Notification getHeartNotifcation(Notification notification);
 	Notification createNotification(Notification notification);

@@ -8,6 +8,7 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,11 @@ public class PushNotifcationController {
 	@GetMapping(path = "/{userID}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ServerSentEvent<List<Notification>>> streamLastMessage(@PathVariable String userID) {
 		return notificationService.getNotificationsByUserToID(userID);
+	}
+	
+	@PutMapping("/{id}")
+	public Notification updateNotificationToRead(@PathVariable Integer id) {
+		return notificationService.updateNotification(id);
 	}
 	
 	
