@@ -52,7 +52,8 @@ public class MessageServiceImpl implements IMessageService{
 		message.setContent(dto.getContent());
 		message.setSenderUser(senderUser);
 		message.setRecciveUser(recciveUser);
-		Notification notification = new Notification(recciveUser, senderUser, null, null, false, false, 4);
+		Notification notification = new Notification(recciveUser, senderUser, dto.getContent(), 
+				null, null, false, false, 4, new Date());
 		
 		notifacationRepository.save(notification);
 		

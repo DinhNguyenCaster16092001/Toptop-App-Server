@@ -38,6 +38,6 @@ public interface INotifacationRepository extends JpaRepository<Notification, Int
 	Page<Notification> findAllNotificationByToUserId(@Param("userId") String userId, Pageable pageable);
 
 
-	@Query("SELECT n FROM Notification n WHERE n.userTo.id =:userId AND n.readed = false ORDER BY n.createdDate DESC")
+	@Query("SELECT n FROM Notification n WHERE n.userTo.id =:userId AND n.readed = 0 ORDER BY n.createdDate DESC")
 	Page<Notification> findAllNotificationByToUserIdAndNotReaded(@Param("userId") String userId, Pageable pageable);
 }
