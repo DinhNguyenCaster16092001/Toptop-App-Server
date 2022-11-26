@@ -94,6 +94,17 @@ public class AccountController {
 		ObjectKey objectKey = new ObjectKey(alias, id);
 		return new BooleanResult(userService.findByAlias(objectKey));
 	}
+	
+	@GetMapping("/search/alias/{alias}")
+	public PagableObject<ApplicationUser> findByAlias(
+			@PathVariable(value = "alias") String alias,
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
+		return userService.findUserByAliasByPage(alias, request);
+	}
 
 	@GetMapping("/email")
 	public BooleanResult existEmail(@RequestParam(value = "target", required = true) String email, @RequestParam(value = "id", required = false) String id) {

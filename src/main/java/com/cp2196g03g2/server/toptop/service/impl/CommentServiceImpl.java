@@ -67,7 +67,7 @@ public class CommentServiceImpl implements ICommentService {
 					savedComment, 
 					false, 
 					false, 
-					2, 
+					1, 
 					new Date());
 			notificationService.createNotification(notification);
 		}		

@@ -394,4 +394,29 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	public long getTotalNewCustomerCurrentMonth() {
 		return userRepository.getTotalNewUserOfCurrentMonth();
 	}
+
+	@Override
+	public PagableObject<ApplicationUser> findUserByAliasByPage(String alias, PagingRequest request) {
+		Sort sort = request.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(request.getSortBy()).ascending()
+				: Sort.by(request.getSortBy()).descending();
+		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
+
+		Page<ApplicationUser> users = userRepository.findByAliasByPage(alias, pageable);
+
+		List<ApplicationUser> listOfUsers = users.getContent();
+		
+		listOfUsers.forEach(user -> {
+			setMoreValueForUser(user);
+		});
+		PagableObject<ApplicationUser> usersPage = new PagableObject<>();
+		usersPage.setData(listOfUsers);
+		usersPage.setPageNo(request.getPageNo());
+		usersPage.setPageSize(request.getPageSize());
+		usersPage.setTotalElements(users.getTotalElements());
+		usersPage.setTotalPages(users.getTotalPages());
+		usersPage.setLast(users.isLast());
+
+		return usersPage;
+	}
 }

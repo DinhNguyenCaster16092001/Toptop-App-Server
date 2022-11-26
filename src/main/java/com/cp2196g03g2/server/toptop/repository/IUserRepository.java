@@ -13,6 +13,10 @@ import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 
 public interface IUserRepository extends JpaRepository<ApplicationUser, String> {
 	ApplicationUser findByAlias(String alias);
+	
+	@Query("SELECT u FROM ApplicationUser u WHERE u.alias LIKE %:alias%")
+	Page<ApplicationUser> findByAliasByPage(@Param("alias") String alias, Pageable pageable);
+	
 
 	ApplicationUser findByEmail(String email);
 

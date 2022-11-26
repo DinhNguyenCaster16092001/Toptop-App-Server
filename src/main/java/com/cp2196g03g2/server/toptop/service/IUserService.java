@@ -12,6 +12,7 @@ import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 public interface IUserService {
 	List<ApplicationUser> findAll();
 	PagableObject<ApplicationUser> findAllByPage(PagingRequest request);
+	PagableObject<ApplicationUser> findUserByAliasByPage(String alias,PagingRequest request);
 	ApplicationUser findById(String id);
 	ApplicationUser save(UserDto userDto);
 	ApplicationUser saveCustomer(UserDto userDto);
