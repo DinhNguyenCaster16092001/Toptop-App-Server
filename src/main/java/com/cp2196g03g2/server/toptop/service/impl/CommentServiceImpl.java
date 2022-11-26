@@ -58,8 +58,20 @@ public class CommentServiceImpl implements ICommentService {
 		comment.setUser(user);
 		comment.setVideo(video);
 		Comment savedComment = commentRepository.save(comment);
-		Notification notification = new Notification(video.getUser(), user, video, savedComment, false, false, 1);
-		notificationService.createNotification(notification);
+		if(!ignoreOwnerVideo(user, video)) {
+			Notification notification = new Notification(
+					video.getUser(), 
+					user, 
+					comment.getContent(),
+					video,
+					savedComment, 
+					false, 
+					false, 
+					2, 
+					new Date());
+			notificationService.createNotification(notification);
+		}		
+		
 		return savedComment;
 	}
 
@@ -138,6 +150,10 @@ public class CommentServiceImpl implements ICommentService {
 		if (parentComment.getUser().getId() != childComment.getUser().getId()) {
 			set.add(parentComment.getUser().getId());
 		}
+		
+		if(parentComment.getVideo().getUser().getId() !=  childComment.getUser().getId()) {
+			set.add(parentComment.getVideo().getUser().getId());
+		}
 		set.removeIf(x -> x.equals(childComment.getUser().getId()));
 		return set;
 	}
@@ -166,7 +182,11 @@ public class CommentServiceImpl implements ICommentService {
 
 
 
-	private boolean ignoreOwnerComment(ApplicationUser user, Comment comment) {
+	private boolean ignoreOwnerComment(ApplicationUser user, Video comment) {
 		return user.getId().equals(comment.getUser().getId());
+	}
+	
+	private boolean ignoreOwnerVideo(ApplicationUser user, Video video) {
+		return user.getId().equals(video.getUser().getId());
 	}
 }
