@@ -27,4 +27,5 @@ public interface IUserService {
 	void updateStatusUser(String id, boolean status);
 	ApplicationUser loginOrRegisterSocial(UserDto userDto);
 	PagableObject<ApplicationUser> findAllCustomer(PagingRequest request);
+	long getTotalNewCustomerCurrentMonth();
 }

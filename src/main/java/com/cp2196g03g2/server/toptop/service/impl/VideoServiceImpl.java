@@ -183,11 +183,13 @@ public class VideoServiceImpl implements IVideoService {
 				.orElseThrow(() -> new NotFoundException("Cannot found video have id" + dto.getVideoId()));
 		Long currentHeart = video.getHeart();
 		ApplicationUser user = userRepository.findById(dto.getUserId()).get();
-		Notification notification = new Notification(video.getUser(), user, null,video, null,false, false, 0, new Date());
+		Notification notification = new Notification(video.getUser(), user, null, video, null, false, false, 0,
+				new Date());
 		if (dto.isStatus()) {
 			video.setHeart(currentHeart + 1);
 			user.addFavouriteVideo(video);
-			notificationService.createNotification(notification);
+			if (!isOwnVideo(video, user))
+				notificationService.createNotification(notification);
 		} else {
 			if (user.getFavouriteVideos().contains(video)) {
 				user.getFavouriteVideos().remove(video);
@@ -267,7 +269,6 @@ public class VideoServiceImpl implements IVideoService {
 		return videoPage;
 	}
 
-
 	@Override
 	public void deleteVideoById(Long id) {
 		Video video = videoRepository.findById(id).get();
@@ -280,10 +281,10 @@ public class VideoServiceImpl implements IVideoService {
 	@Override
 	public boolean isUserHeartBefore(Long videoId, String userId) {
 		ApplicationUser user = userRepository.findById(userId).get();
-		Video video = videoRepository.findById(videoId).get();		
-			if(user != null)
-				if(user.getFavouriteVideos().contains(video) == true)
-					return true;
+		Video video = videoRepository.findById(videoId).get();
+		if (user != null)
+			if (user.getFavouriteVideos().contains(video) == true)
+				return true;
 		return false;
 	}
 
@@ -291,8 +292,12 @@ public class VideoServiceImpl implements IVideoService {
 	public Video updateEnableCommentProfessedVideo(UpdateVideoDto dto) {
 		Video video = videoRepository.findById(dto.getId()).get();
 		video.setEnableComment(dto.isEnableComment());
-		video.setProfessed(dto.isProfessed());	
+		video.setProfessed(dto.isProfessed());
 		return videoRepository.save(video);
 	};
+
+	private boolean isOwnVideo(Video video, ApplicationUser user) {
+		return video.getUser().getId().equals(user.getId());
+	}
 
 }

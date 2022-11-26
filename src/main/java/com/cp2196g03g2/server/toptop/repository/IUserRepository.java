@@ -35,7 +35,8 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String> 
 			+ "u.alias LIKE %:keyword%) " + "AND u.role.id IN (5,6)")
 	Page<ApplicationUser> findAllCustomerByPage(Pageable pageable, @Param("keyword") String keyword);
 
-	@Query(value = "SELECT COUNT(id) FROM tbl_user WHERE MONTH(created_date) = MONTH(CURRENT_DATE)", nativeQuery = true)
+	@Query(value = "SELECT COUNT(id) FROM tbl_user WHERE MONTH(created_date) = MONTH(CURRENT_DATE) " + 
+			"AND role_id IN (5,6)", nativeQuery = true)
 	long getTotalNewUserOfCurrentMonth();
 	
 	

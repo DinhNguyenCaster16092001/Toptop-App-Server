@@ -389,4 +389,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	public ApplicationUser findByAlias(String alias) {
 		return userRepository.findByAlias(alias);
 	}
+
+	@Override
+	public long getTotalNewCustomerCurrentMonth() {
+		return userRepository.getTotalNewUserOfCurrentMonth();
+	}
 }

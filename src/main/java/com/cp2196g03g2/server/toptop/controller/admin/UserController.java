@@ -99,4 +99,11 @@ public class UserController {
 		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
 		return userService.findAllCustomer(request);
 	}
+	
+	
+	@GetMapping("/reports/customer/month")
+	public long getTotalNewUserCurrentMonth() {
+		return userService.getTotalNewCustomerCurrentMonth();
+	}
+	
 }
