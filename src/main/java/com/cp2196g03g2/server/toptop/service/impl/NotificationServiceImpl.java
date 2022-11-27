@@ -130,16 +130,18 @@ public class NotificationServiceImpl implements INotificationService {
 	}
 
 	private void setTimeAgoForNotification(List<Notification> notifications) {
-		PrettyTime prettyTime = new PrettyTime();
-		notifications.forEach(n -> {
-			System.out.println(n.getCreatedDate());
-			n.setPastTime(prettyTime.format(n.getCreatedDate()));
-		});
+		/*
+		 * PrettyTime prettyTime = new PrettyTime(); notifications.forEach(n -> {
+		 * System.out.println(n.getCreatedDate());
+		 * n.setPastTime(prettyTime.format(n.getCreatedDate())); });
+		 */
 	}
 	
 	private void setTimeAgoForNotification(Notification notifications) {
-		PrettyTime prettyTime = new PrettyTime();
-		notifications.setPastTime(prettyTime.format(notifications.getCreatedDate()));
+		/*
+		 * PrettyTime prettyTime = new PrettyTime();
+		 * notifications.setPastTime(prettyTime.format(notifications.getCreatedDate()));
+		 */
 	}
 
 	@Override

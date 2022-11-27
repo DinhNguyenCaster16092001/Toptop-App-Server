@@ -48,12 +48,12 @@ public class MessageServiceImpl implements IMessageService{
 		ApplicationUser senderUser = userRepository.findById(dto.getSenderId()).get();
 		ApplicationUser recciveUser = userRepository.findById(dto.getReccive_id()).get();
 		
-		message.setCreatedDate(new Date());
+
 		message.setContent(dto.getContent());
 		message.setSenderUser(senderUser);
 		message.setRecciveUser(recciveUser);
 		Notification notification = new Notification(recciveUser, senderUser, dto.getContent(), 
-				null, null, false, false, 4, new Date());
+				null, null, false, false, 4);
 		
 		notifacationRepository.save(notification);
 		

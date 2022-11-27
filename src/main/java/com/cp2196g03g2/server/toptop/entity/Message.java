@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -28,11 +30,10 @@ public class Message {
 	@Column
 	private String content;
 	
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
-	@JsonSerialize(as = Date.class)
+	@Column(nullable = false, updatable = false)
+	@JsonSerialize(as = LocalDateTime.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss dd-MM-yyyy")
-	private Date createdDate;
+	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 	
 	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name = "sender_id")
@@ -48,11 +49,10 @@ public class Message {
 	}
 
 
-	public Message(Long id, String content, boolean status, Date createdDate, ApplicationUser senderUser,
+	public Message(Long id, String content, boolean status, ApplicationUser senderUser,
 			ApplicationUser recciveUser) {
 		this.id = id;
 		this.content = content;
-		this.createdDate = createdDate;
 		this.senderUser = senderUser;
 		this.recciveUser = recciveUser;
 	}
@@ -82,14 +82,14 @@ public class Message {
 	}
 
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
 
 
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 

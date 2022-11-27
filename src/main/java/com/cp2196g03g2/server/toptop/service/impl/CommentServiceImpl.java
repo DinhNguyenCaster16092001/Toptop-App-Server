@@ -52,7 +52,6 @@ public class CommentServiceImpl implements ICommentService {
 		Video video = videoRepository.findById(commentDto.getVideoId()).get();
 		ApplicationUser user = userRepository.findById(commentDto.getUserId()).get();
 		Comment comment = new Comment();
-		comment.setCreatedDate(new Date());
 		comment.setParent(null);
 		comment.setContent(commentDto.getContent());
 		comment.setUser(user);
@@ -67,10 +66,9 @@ public class CommentServiceImpl implements ICommentService {
 					savedComment, 
 					false, 
 					false, 
-					1, 
-					new Date());
+					1);
 			notificationService.createNotification(notification);
-		}		
+		}			
 		
 		return savedComment;
 	}
@@ -114,7 +112,7 @@ public class CommentServiceImpl implements ICommentService {
 		// Get User Comment
 		ApplicationUser user = userRepository.findById(commentDto.getUserId()).get();
 
-		Comment childComment = new Comment(commentDto.getContent(), new Date(), user, video, parentComment);
+		Comment childComment = new Comment(commentDto.getContent(), user, video, parentComment);
 
 		// comment to database
 		Comment savedCommet = commentRepository.save(childComment);
@@ -130,8 +128,7 @@ public class CommentServiceImpl implements ICommentService {
 							parentComment, 
 							false, 
 							false, 
-							2, 
-							new Date());
+							2);
 					notification.setContent(childComment.getContent());
 					notificationService.createNotification(notification);
 				}

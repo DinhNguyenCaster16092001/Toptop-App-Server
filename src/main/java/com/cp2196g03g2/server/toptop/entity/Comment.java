@@ -1,6 +1,8 @@
 package com.cp2196g03g2.server.toptop.entity;
 
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +40,11 @@ public class Comment {
 	
 	
 	
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
+	
+	@Column(nullable = false, updatable = false)
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss dd-MM-yyyy")
-	private Date createdDate;
+	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 	
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userid")
@@ -67,9 +69,8 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(String content, Date createdDate, ApplicationUser user, Video video, Comment parent) {
+	public Comment(String content, ApplicationUser user, Video video, Comment parent) {
 		this.content = content;
-		this.createdDate = createdDate;
 		this.user = user;
 		this.video = video;
 		this.parent = parent;
@@ -91,11 +92,11 @@ public class Comment {
 		this.content = content;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 

@@ -1,5 +1,9 @@
 package com.cp2196g03g2.server.toptop.dto;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class UserDto {
 
 	private String id;
@@ -11,12 +15,13 @@ public class UserDto {
 	private String alias;
 	private Long role;
 	private boolean active;
+	private String createdDate;
 	
 	public UserDto() {
 	}
 	
 	public UserDto(String email, String password, String fullName, String avatar, String history, String alias,
-			Long role) {
+			Long role, boolean active, String createdDate) {
 		this.email = email;
 		this.password = password;
 		this.fullName = fullName;
@@ -24,9 +29,14 @@ public class UserDto {
 		this.history = history;
 		this.alias = alias;
 		this.role = role;
+		this.active = active;
+		this.createdDate = createdDate;
 	}
 	
 	
+	
+
+
 	public UserDto(String email, String fullName, String avatar, String alias,
 			Long role) {
 		this.email = email;
@@ -144,13 +154,25 @@ public class UserDto {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+	
+	
+	public String getCreatedDate() {
+		return createdDate;
+	}
 
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
 
 	@Override
 	public String toString() {
-		return "UserDto [id=" + id + ", email=" + email + ", fullName=" + fullName + ", avatar=" + avatar + ", history="
-				+ history + ", alias=" + alias + "]";
+		return "UserDto [id=" + id + ", email=" + email + ", password=" + password + ", fullName=" + fullName
+				+ ", avatar=" + avatar + ", history=" + history + ", alias=" + alias + ", role=" + role + ", active="
+				+ active + ", createdDate=" + createdDate + "]";
 	}
+
+	
+	
 
 	
 }	

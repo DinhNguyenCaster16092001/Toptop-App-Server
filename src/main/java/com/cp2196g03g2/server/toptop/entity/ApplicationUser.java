@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.Hibernate;
@@ -66,11 +70,13 @@ public class ApplicationUser {
 	@Column(name = "history", columnDefinition = "TEXT")
 	private String history;
 	
-	@CreationTimestamp
+	
+	
+	
 	@Column(name = "created_date",nullable = false, updatable = false)
-	@JsonSerialize(as = Date.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
-	private Date createdDate;
+	@JsonSerialize(as = LocalDateTime.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy", timezone = "MY_TIME_ZONE")
+	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));;
 	
 	
 	@Column(name = "one_time_password")
@@ -255,11 +261,11 @@ public class ApplicationUser {
 		this.videos = videos;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 	

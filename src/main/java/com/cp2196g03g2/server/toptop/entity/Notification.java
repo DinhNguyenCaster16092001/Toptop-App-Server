@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -70,9 +72,9 @@ public class Notification {
 
 	
 	
-	@JsonSerialize(as = Date.class)
+	@JsonSerialize(as = LocalDateTime.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss dd-MM-yyyy")
-	private Date createdDate;
+	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 	
 	public Notification() {
 	}
@@ -103,7 +105,7 @@ public class Notification {
 	
 	
 	public Notification(ApplicationUser userTo, ApplicationUser userFrom, String content, Video fromVideo,
-			Comment fromComment, Boolean delivered, Boolean readed, int notificationType, Date createdDate) {
+			Comment fromComment, Boolean delivered, Boolean readed, int notificationType) {
 		this.userTo = userTo;
 		this.userFrom = userFrom;
 		this.content = content;
@@ -112,7 +114,6 @@ public class Notification {
 		this.delivered = delivered;
 		this.readed = readed;
 		this.notificationType = notificationType;
-		this.createdDate = createdDate;
 	}
 
 	public Integer getId() {
@@ -218,11 +219,11 @@ public class Notification {
 		this.content = content;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 	
