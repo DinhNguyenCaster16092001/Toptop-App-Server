@@ -42,7 +42,7 @@ public class Comment {
 	
 	
 	@Column(nullable = false, updatable = false)
-	@JsonSerialize(as = Date.class)
+	@JsonSerialize(as = LocalDateTime.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss dd-MM-yyyy")
 	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 	

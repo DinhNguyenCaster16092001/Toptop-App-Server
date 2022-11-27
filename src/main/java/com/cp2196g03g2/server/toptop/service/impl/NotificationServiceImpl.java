@@ -1,7 +1,10 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -130,18 +133,19 @@ public class NotificationServiceImpl implements INotificationService {
 	}
 
 	private void setTimeAgoForNotification(List<Notification> notifications) {
-		/*
-		 * PrettyTime prettyTime = new PrettyTime(); notifications.forEach(n -> {
-		 * System.out.println(n.getCreatedDate());
-		 * n.setPastTime(prettyTime.format(n.getCreatedDate())); });
-		 */
+		
+		 PrettyTime prettyTime = new PrettyTime(); notifications.forEach(n -> {
+		  System.out.println(n.getCreatedDate());
+		  Date convertedDatetime = Date.from(n.getCreatedDate().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant());
+		  n.setPastTime(prettyTime.format(convertedDatetime)); });
+		 
 	}
 	
 	private void setTimeAgoForNotification(Notification notifications) {
-		/*
-		 * PrettyTime prettyTime = new PrettyTime();
-		 * notifications.setPastTime(prettyTime.format(notifications.getCreatedDate()));
-		 */
+		  PrettyTime prettyTime = new PrettyTime();
+		  Date convertedDatetime = Date.from(notifications.getCreatedDate().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant());
+		  notifications.setPastTime(prettyTime.format(convertedDatetime));
+		 
 	}
 
 	@Override
