@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.model.ChartCloumModel;
 
 public interface IUserRepository extends JpaRepository<ApplicationUser, String> {
 	ApplicationUser findByAlias(String alias);
@@ -43,5 +44,10 @@ public interface IUserRepository extends JpaRepository<ApplicationUser, String> 
 			"AND role_id IN (5,6)", nativeQuery = true)
 	long getTotalNewUserOfCurrentMonth();
 	
+	@Query(value ="SELECT m.id AS month, COALESCE(COUNT(u.id),0) AS total " +
+			" FROM tbl_month m LEFT JOIN tbl_user u " +
+			" ON m.id = MONTH(u.created_date) AND u.role_id IN (5,6) " +
+			" AND YEAR(u.created_date) =:year GROUP BY m.id ", nativeQuery = true)
+	List<ChartCloumModel> statisticsNewCustomerBytTwelveMonthPassStatus(@Param("year") Integer year);
 	
 }

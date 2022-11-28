@@ -379,7 +379,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	private void setMoreValueForUser(ApplicationUser user) {
 		Long follower = friendShipRepository.countFollowerByUserId(user.getId());
 		Long following = friendShipRepository.countFollowingByUserId(user.getId());
-		Long view = videoRepository.countViewByUserId(user.getId());
 		Long heart = videoRepository.countHeartByUserId(user.getId());
 		user.setHeart(heart != null ? heart : 0);
 		user.setFollowers(follower != null ? follower : 0);
@@ -388,7 +387,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	@Override
 	public ApplicationUser findByAlias(String alias) {
-		return userRepository.findByAlias(alias);
+		ApplicationUser user =  userRepository.findByAlias(alias);
+		setMoreValueForUser(user);
+		return user;
 	}
 
 	@Override
