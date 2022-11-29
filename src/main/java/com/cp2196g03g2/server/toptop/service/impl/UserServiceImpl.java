@@ -2,6 +2,7 @@ package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -41,6 +42,7 @@ import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
 import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.exception.InternalServerException;
 import com.cp2196g03g2.server.toptop.exception.NotFoundException;
+import com.cp2196g03g2.server.toptop.model.ChartCloumModel;
 import com.cp2196g03g2.server.toptop.repository.IFriendShipRepository;
 import com.cp2196g03g2.server.toptop.repository.IRoleRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
@@ -420,5 +422,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 		usersPage.setLast(users.isLast());
 
 		return usersPage;
+	}
+
+	@Override
+	public List<ChartCloumModel> reportByYear(Integer year) {
+		if(year == null || year <= 0) {
+			year = Year.now().getValue();
+		}
+		return userRepository.statisticsNewCustomerBytTwelveMonthPassStatus(year);	
 	}
 }

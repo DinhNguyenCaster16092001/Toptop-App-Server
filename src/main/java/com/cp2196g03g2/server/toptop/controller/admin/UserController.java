@@ -1,5 +1,7 @@
 package com.cp2196g03g2.server.toptop.controller.admin;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +23,7 @@ import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.model.ChartCloumModel;
 import com.cp2196g03g2.server.toptop.service.IUserService;
 
 @RestController
@@ -104,6 +107,11 @@ public class UserController {
 	@GetMapping("/reports/customer/month")
 	public long getTotalNewUserCurrentMonth() {
 		return userService.getTotalNewCustomerCurrentMonth();
+	}
+	
+	@GetMapping("/reports/customer")
+	public List<ChartCloumModel> getTotalNewUserCurrentMonth(@RequestParam("year") Integer year) {
+		return userService.reportByYear(year);
 	}
 	
 }

@@ -8,6 +8,7 @@ import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.dto.ResetPasswordDto;
 import com.cp2196g03g2.server.toptop.dto.UserDto;
 import com.cp2196g03g2.server.toptop.entity.ApplicationUser;
+import com.cp2196g03g2.server.toptop.model.ChartCloumModel;
 
 public interface IUserService {
 	List<ApplicationUser> findAll();
@@ -29,4 +30,5 @@ public interface IUserService {
 	ApplicationUser loginOrRegisterSocial(UserDto userDto);
 	PagableObject<ApplicationUser> findAllCustomer(PagingRequest request);
 	long getTotalNewCustomerCurrentMonth();
+	List<ChartCloumModel> reportByYear(Integer year);
 }

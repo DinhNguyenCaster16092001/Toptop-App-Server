@@ -160,7 +160,7 @@ public class TicketShopServiceImpl implements ITicketShopService {
 	@Override
 	@Transactional
 	public List<ChartCloumModel> ticketStatisticsByYearAndStatus(Integer status, Integer year) {
-		if(year != null || year <= 0) {
+		if(year == null || year <= 0) {
 			year = Year.now().getValue();
 		}
 		return ticketShopRepository.ticketStatisticsBytTwelveMonthPassStatus(status, year);
