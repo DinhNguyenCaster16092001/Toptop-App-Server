@@ -25,6 +25,7 @@ import com.cp2196g03g2.server.toptop.entity.Comment;
 import com.cp2196g03g2.server.toptop.entity.Notification;
 import com.cp2196g03g2.server.toptop.entity.Video;
 import com.cp2196g03g2.server.toptop.enums.NotificationType;
+import com.cp2196g03g2.server.toptop.model.CommentModel;
 import com.cp2196g03g2.server.toptop.repository.ICommentRepository;
 import com.cp2196g03g2.server.toptop.repository.IUserRepository;
 import com.cp2196g03g2.server.toptop.repository.IVideoRepository;
@@ -57,19 +58,12 @@ public class CommentServiceImpl implements ICommentService {
 		comment.setUser(user);
 		comment.setVideo(video);
 		Comment savedComment = commentRepository.save(comment);
-		if(!ignoreOwnerVideo(user, video)) {
-			Notification notification = new Notification(
-					video.getUser(), 
-					user, 
-					comment.getContent(),
-					video,
-					savedComment, 
-					false, 
-					false, 
-					1);
+		if (!ignoreOwnerVideo(user, video)) {
+			Notification notification = new Notification(video.getUser(), user, comment.getContent(), video,
+					savedComment, false, false, 1);
 			notificationService.createNotification(notification);
-		}			
-		
+		}
+
 		return savedComment;
 	}
 
@@ -120,15 +114,8 @@ public class CommentServiceImpl implements ICommentService {
 			Set<String> userIds = getListUserId(parentComment, childComment);
 			if (userIds.size() > 0) {
 				for (String userTo : userIds) {
-					Notification notification = new Notification(
-							userRepository.findById(userTo).get(), 
-							user, 
-							childComment.getContent(),
-							video,
-							parentComment, 
-							false, 
-							false, 
-							2);
+					Notification notification = new Notification(userRepository.findById(userTo).get(), user,
+							childComment.getContent(), video, parentComment, false, false, 2);
 					notification.setContent(childComment.getContent());
 					notificationService.createNotification(notification);
 				}
@@ -147,8 +134,8 @@ public class CommentServiceImpl implements ICommentService {
 		if (parentComment.getUser().getId() != childComment.getUser().getId()) {
 			set.add(parentComment.getUser().getId());
 		}
-		
-		if(parentComment.getVideo().getUser().getId() !=  childComment.getUser().getId()) {
+
+		if (parentComment.getVideo().getUser().getId() != childComment.getUser().getId()) {
 			set.add(parentComment.getVideo().getUser().getId());
 		}
 		set.removeIf(x -> x.equals(childComment.getUser().getId()));
@@ -177,13 +164,31 @@ public class CommentServiceImpl implements ICommentService {
 		return commentPage;
 	}
 
-
-
 	private boolean ignoreOwnerComment(ApplicationUser user, Video comment) {
 		return user.getId().equals(comment.getUser().getId());
 	}
-	
+
 	private boolean ignoreOwnerVideo(ApplicationUser user, Video video) {
 		return user.getId().equals(video.getUser().getId());
+	}
+
+	@Override
+	public CommentModel findById(Long id) {
+		Comment comment = commentRepository.findById(id).get();
+		if (comment.getParent() != null) {
+			return toModel(comment.getParent());
+		}
+		return toModel(comment);
+	}
+
+	private CommentModel toModel(Comment comment) {
+		CommentModel model = new CommentModel();
+		model.setId(comment.getId());
+		model.setContent(comment.getContent());
+		model.setCreatedDate(comment.getCreatedDate());
+		model.setUser(comment.getUser());
+		if (comment.getChildren().size() > 0)
+			model.setChildren(comment.getChildren());
+		return model;
 	}
 }

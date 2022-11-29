@@ -1,74 +1,21 @@
-package com.cp2196g03g2.server.toptop.entity;
+package com.cp2196g03g2.server.toptop.dto;
 
-import java.util.ArrayList;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "tbl_product")
-public class Product {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductDto {
 	private Long id;
-	
-	@Column(length = 265, nullable = false)
 	private String name;
-	
-	@Column(nullable = false)
 	private double price;
-	
-	@Column(nullable = false)
-	private String image;
-	
-	@Column(name = "discount_price")
 	private double discountPrice;
-	
-	@Column(name = "quantity", nullable = false)
 	private int qty;
-	
-	@Column(columnDefinition = "TEXT")
 	private String description;
-	
-	@Column
 	private String color;
-	
-	@Column
 	private String size;
-	
-	@Column 
+	private String image;
 	private boolean enable;
-	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
-	@JoinColumn(name = "user_id")
-	private ApplicationUser user;
-	
-	
-	public Product() {
-	}
+	private String userId;
 
-	public Product(String name, double price, double discountPrice, int qty, String description, String color,
-			String size) {
-		this.name = name;
-		this.price = price;
-		this.discountPrice = discountPrice;
-		this.qty = qty;
-		this.description = description;
-		this.color = color;
-		this.size = size;
-	}
 
-	public Product(Long id, String name, double price, double discountPrice, int qty, String description, String color,
-			String size, boolean enable) {
+	public ProductDto(Long id, String name, double price, double discountPrice, int qty, String description,
+			String color, String size, String image, boolean enable, String userId) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
@@ -77,8 +24,28 @@ public class Product {
 		this.description = description;
 		this.color = color;
 		this.size = size;
+		this.image = image;
 		this.enable = enable;
+		this.userId = userId;
 	}
+	
+	
+
+	public ProductDto(String name, double price, double discountPrice, int qty, String description, String color,
+			String size, String image, boolean enable, String userId) {
+		this.name = name;
+		this.price = price;
+		this.discountPrice = discountPrice;
+		this.qty = qty;
+		this.description = description;
+		this.color = color;
+		this.size = size;
+		this.image = image;
+		this.enable = enable;
+		this.userId = userId;
+	}
+
+
 
 	public Long getId() {
 		return id;
@@ -153,15 +120,6 @@ public class Product {
 	}
 	
 
-	public ApplicationUser getUser() {
-		return user;
-	}
-
-	public void setUser(ApplicationUser user) {
-		this.user = user;
-	}
-	
-	
 	public String getImage() {
 		return image;
 	}
@@ -170,11 +128,12 @@ public class Product {
 		this.image = image;
 	}
 
-	@Override
-	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", price=" + price + ", discountPrice=" + discountPrice
-				+ ", qty=" + qty + ", description=" + description + ", color=" + color + ", size=" + size + ", enable="
-				+ enable + "]";
+	public String getUserId() {
+		return userId;
 	}
-	
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 }

@@ -105,4 +105,13 @@ public class FriendShipServiceImpl implements IFriendShipService {
 		
 	}
 
+	@Override
+	public boolean IsYouCanChatWithUser(String userId, String friendId) {
+		boolean youFollow = isYouFollowUser(userId, friendId);
+		boolean friendFollow = isYouFollowUser(friendId, userId);
+		if(youFollow && friendFollow)
+			return true;
+		return false;
+	}
+
 }

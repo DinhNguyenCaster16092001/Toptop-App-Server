@@ -118,6 +118,11 @@ public class AccountController {
 		return new BooleanResult(friendShipService.isYouFollowUser(requestId, acceptId));
 	}
 	
+	@GetMapping("/friend")
+	public BooleanResult isBothAreFriend(@RequestParam(value = "requestId", required = false) String requestId, @RequestParam(value = "acceptId", required = false) String acceptId) {
+		return new BooleanResult(friendShipService.IsYouCanChatWithUser(requestId, acceptId));
+	}
+	
 	@GetMapping("/forgotPassword/{email}")
 	public ApplicationUser forgotPassword(@PathVariable String email) {
 		ApplicationUser user = userService.sendOtpCodeByEmail(email);

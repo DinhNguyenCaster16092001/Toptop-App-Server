@@ -19,6 +19,7 @@ import com.cp2196g03g2.server.toptop.dto.LikeDto;
 import com.cp2196g03g2.server.toptop.dto.PagableObject;
 import com.cp2196g03g2.server.toptop.dto.PagingRequest;
 import com.cp2196g03g2.server.toptop.entity.Comment;
+import com.cp2196g03g2.server.toptop.model.CommentModel;
 import com.cp2196g03g2.server.toptop.service.ICommentService;
 
 @RestController
@@ -37,6 +38,11 @@ public class CommentController {
 			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
 		PagingRequest request = new PagingRequest(pageNo, pageSize, sortBy, sortDir);
 		return commentService.findAllParentCommentByVideoId(videoId, request);
+	}
+	
+	@GetMapping("/search/{id}")
+	public CommentModel findById(@PathVariable Long id) {
+		return commentService.findById(id);
 	}
 
 	@PostMapping

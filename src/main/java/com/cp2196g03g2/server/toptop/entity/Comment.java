@@ -37,10 +37,6 @@ public class Comment {
 	@Column
 	private String content;
 	
-	
-	
-	
-	
 	@Column(nullable = false, updatable = false)
 	@JsonSerialize(as = LocalDateTime.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss dd-MM-yyyy")
