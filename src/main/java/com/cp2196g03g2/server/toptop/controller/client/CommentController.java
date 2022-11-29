@@ -41,8 +41,8 @@ public class CommentController {
 	}
 	
 	@GetMapping("/search/{id}")
-	public CommentModel findById(@PathVariable Long id) {
-		return commentService.findById(id);
+	public Comment findById(@PathVariable Long id) {
+		return commentService.findParentById(id);
 	}
 
 	@PostMapping

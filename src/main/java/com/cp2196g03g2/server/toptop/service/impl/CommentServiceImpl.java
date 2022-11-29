@@ -191,4 +191,12 @@ public class CommentServiceImpl implements ICommentService {
 			model.setChildren(comment.getChildren());
 		return model;
 	}
+
+	@Override
+	public Comment findParentById(Long id) {
+		Comment comment = commentRepository.findById(id).get();
+		if(comment.getParent() != null)
+			return comment.getParent();
+		return comment;
+	}
 }
