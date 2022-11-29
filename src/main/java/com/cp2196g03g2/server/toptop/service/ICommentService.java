@@ -16,5 +16,5 @@ public interface ICommentService {
 	PagableObject<Comment> findAllParentCommentByVideoId(Long videoId, PagingRequest request);
 	PagableObject<Comment> findChildrenCommentByParentId(Long parentId, PagingRequest request);
 	CommentModel findById(Long id);
-	Comment findParentById(Long id);
+	PagableObject<Comment> findParentById(Long id);
 }

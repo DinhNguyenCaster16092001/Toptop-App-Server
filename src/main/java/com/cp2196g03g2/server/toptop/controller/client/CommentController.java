@@ -41,7 +41,7 @@ public class CommentController {
 	}
 	
 	@GetMapping("/search/{id}")
-	public Comment findById(@PathVariable Long id) {
+	public PagableObject<Comment> findById(@PathVariable Long id) {
 		return commentService.findParentById(id);
 	}
 

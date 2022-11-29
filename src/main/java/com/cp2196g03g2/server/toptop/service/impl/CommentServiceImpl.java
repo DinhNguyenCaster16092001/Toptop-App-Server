@@ -1,5 +1,6 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -193,10 +194,21 @@ public class CommentServiceImpl implements ICommentService {
 	}
 
 	@Override
-	public Comment findParentById(Long id) {
+	public PagableObject<Comment> findParentById(Long id) {
 		Comment comment = commentRepository.findById(id).get();
+		List<Comment> comments = new ArrayList<>();
 		if(comment.getParent() != null)
-			return comment.getParent();
-		return comment;
+			comments.add(comment.getParent());
+		else
+			comments.add(comment);		
+		PagableObject<Comment> commentPage = new PagableObject<>();
+		commentPage.setData(comments);
+		commentPage.setPageNo(0);
+		commentPage.setPageSize(1);
+		commentPage.setTotalElements(1);
+		commentPage.setTotalPages(1);
+		commentPage.setLast(true);
+		return commentPage;
+		
 	}
 }
