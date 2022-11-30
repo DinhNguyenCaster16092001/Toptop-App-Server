@@ -20,4 +20,5 @@ public interface IVideoService {
 	PagableObject<Video> findVideoByUserId(PagingRequest request, String userId, boolean professed);	
 	PagableObject<Video> findFavouriteVideoByPage(PagingRequest request, String userId);
 	void deleteVideoById(Long id);
+	void updateStatusVideo(Long id, boolean status);
 }

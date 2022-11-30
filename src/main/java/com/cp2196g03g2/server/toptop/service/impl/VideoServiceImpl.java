@@ -299,4 +299,12 @@ public class VideoServiceImpl implements IVideoService {
 		return video.getUser().getId().equals(user.getId());
 	}
 
+	@Override
+	public void updateStatusVideo(Long id, boolean status) {
+		Video video = videoRepository.findById(id).get();
+		video.setStatus(status);
+		video.setProfessed(status);
+		videoRepository.save(video);
+	}
+
 }

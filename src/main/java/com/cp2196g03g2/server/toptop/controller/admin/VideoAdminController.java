@@ -27,4 +27,10 @@ public class VideoAdminController {
 	public Video findById(@PathVariable Long id) {
 		return videoService.findById(id);
 	}
+	
+	
+	@PutMapping("/{id}/status/{status}")
+	public void updateStatusVideo(@PathVariable Long id, @PathVariable String status) {
+		videoService.updateStatusVideo(id, Boolean.parseBoolean(status));
+	}
 }

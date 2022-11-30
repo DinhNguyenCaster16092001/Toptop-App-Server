@@ -31,6 +31,13 @@ public class ReportVideoDto {
 	
 
 
+	public ReportVideoDto(Long id, String replyUserId) {
+		this.id = id;
+		this.replyUserId = replyUserId;
+	}
+
+
+
 	public ReportVideoDto(Integer typeId, String userId, String replyUserId, Long videoId) {
 		this.typeId = typeId;
 		this.userId = userId;

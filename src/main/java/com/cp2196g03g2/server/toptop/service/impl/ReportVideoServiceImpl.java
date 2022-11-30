@@ -1,5 +1,6 @@
 package com.cp2196g03g2.server.toptop.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -40,6 +41,9 @@ public class ReportVideoServiceImpl implements IReportVideoService{
 	@Autowired
 	private IReportTypeRepository reportTypeRepository;
 	
+	@Autowired
+	private EmailServiceImpl emailServiceImpl;
+	
 
 	@Override
 	public PagableObject<ReportVideo> findAllByPage(PagingRequest request) {
@@ -50,7 +54,7 @@ public class ReportVideoServiceImpl implements IReportVideoService{
 		// create Pageable instance
 		Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(), sort);
 
-		Page<ReportVideo> reports = reportVideoRepository.findAllByPage(request.getKeyword(), pageable);
+		Page<ReportVideo> reports = reportVideoRepository.findAllByPage(pageable);
 
 		List<ReportVideo> listOfReportVideos = reports.getContent();
 
@@ -69,11 +73,14 @@ public class ReportVideoServiceImpl implements IReportVideoService{
 	@Transactional
 	public ReportVideo updateStatusVideo(ReportVideoDto dto) {
 		ReportVideo reportVideo = reportVideoRepository.findById(dto.getId()).get();
-		Video video = videoRepository.findById(dto.getId()).get();
+		ApplicationUser user = reportVideo.getUser();
 		reportVideo.setReplyUser(userRepository.findById(dto.getReplyUserId()).get());
 		reportVideo.setStatus(true);
-		video.setStatus(false);
-		videoRepository.save(video);
+		
+		if(user != null) {
+			emailServiceImpl.sendMail(user.getEmail(), "Approve Report", "approve-report", null);
+		}
+		
 		return reportVideoRepository.save(reportVideo);
 	}
 
