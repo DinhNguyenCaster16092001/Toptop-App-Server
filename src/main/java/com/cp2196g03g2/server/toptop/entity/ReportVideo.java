@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -38,6 +39,9 @@ public class ReportVideo {
 	@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "videoId")
 	private Video video;
+	
+	@Transient
+	private Long videoId;
 
 	public ReportVideo() {
 	}
@@ -115,6 +119,15 @@ public class ReportVideo {
 
 	public void setVideo(Video video) {
 		this.video = video;
+	}
+
+	public Long getVideoId() {
+		return this.video.getId();
+	}
+
+
+	public void setVideoId(Long videoId) {
+		this.videoId = videoId;
 	}
 
 
