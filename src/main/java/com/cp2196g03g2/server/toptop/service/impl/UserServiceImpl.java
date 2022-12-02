@@ -2,11 +2,7 @@ package com.cp2196g03g2.server.toptop.service.impl;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Year;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -113,9 +109,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 			user.setAvatar(userDto.getAvatar());
 			user.setHistory(userDto.getHistory());
 			user.setRole(roleRepository.findById(userDto.getRole()).get());
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-			LocalDate dateTime = LocalDate.parse(userDto.getCreatedDate(), formatter);;
-			user.setCreatedDate(LocalDateTime.of(dateTime, LocalTime.of(0,0)));
 			return userRepository.save(user);
 		} catch (Exception e) {
 			throw new InternalServerException(e.getMessage());
