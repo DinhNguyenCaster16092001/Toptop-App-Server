@@ -42,8 +42,10 @@ public class PublicController {
 		if (dto.getContent().length() > 0) {
 			simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/pending", true);
 			return true;
+		}else {
+			simpMessagingTemplate.convertAndSendToUser(dto.getReccive_id(), "/pending", false);
+			return false;
 		}
-		return false;
 	}
 
 	/*
