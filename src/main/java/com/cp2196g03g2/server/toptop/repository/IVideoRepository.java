@@ -18,7 +18,7 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
 
-	@Query("SELECT v FROM Video v WHERE v.user.id=:userId AND v.professed =:professed AND v.status = false")
+	@Query("SELECT v FROM Video v WHERE v.user.id=:userId AND v.professed =:professed AND v.status = 1")
 	Page<Video> findByUserAndProfessed(@Param("userId") String userId,@Param("professed")boolean professed,Pageable pageable);
 	
 	@Query("SELECT SUM(v.view) FROM Video v WHERE v.user.id =:userid")
