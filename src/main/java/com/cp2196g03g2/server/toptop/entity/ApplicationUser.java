@@ -76,7 +76,7 @@ public class ApplicationUser {
 	@Column(name = "created_date",nullable = false, updatable = false)
 	@JsonSerialize(as = LocalDateTime.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy", timezone = "MY_TIME_ZONE")
-	private LocalDateTime createdDate = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));;
+	private LocalDateTime createdDate;/* = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));; */
 	
 	
 	@Column(name = "one_time_password")
