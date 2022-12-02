@@ -14,11 +14,11 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 	@Query("SELECT v FROM Video v LEFT JOIN v.hashTags h WHERE (v.title LIKE %:keyword% OR " + 
 															   "v.user.alias LIKE %:keyword% OR "  +
 															   "h.name LIKE %:keyword%) " +
-															   "AND v.professed = 1 " +
+															   "AND v.professed = 1 AND v.status = 1 " +
 															   "GROUP BY v.title, v.id")
 	Page<Video> findAllVideoByPage(Pageable pageable, @Param("keyword")String keyword);
 
-	@Query("SELECT v FROM Video v WHERE v.user.id=:userId AND v.professed =:professed")
+	@Query("SELECT v FROM Video v WHERE v.user.id=:userId AND v.professed =:professed AND v.status = false")
 	Page<Video> findByUserAndProfessed(@Param("userId") String userId,@Param("professed")boolean professed,Pageable pageable);
 	
 	@Query("SELECT SUM(v.view) FROM Video v WHERE v.user.id =:userid")
@@ -26,4 +26,5 @@ public interface IVideoRepository extends JpaRepository<Video, Long> {
 	
 	@Query("SELECT SUM(v.heart) FROM Video v WHERE v.user.id =:userid")
 	Long countHeartByUserId(@Param("userid") String userid);
+	
 }

@@ -153,6 +153,9 @@ public class VideoServiceImpl implements IVideoService {
 			else
 				video.setComment(0L);
 		});
+		
+		
+		listOfVideos.removeIf(video -> video.isStatus() == false);
 
 		PagableObject<Video> videoPage = new PagableObject<>();
 
@@ -271,10 +274,8 @@ public class VideoServiceImpl implements IVideoService {
 	@Override
 	public void deleteVideoById(Long id) {
 		Video video = videoRepository.findById(id).get();
-
-		video.getHashTags().removeAll(video.getHashTags());
-
-		videoRepository.delete(video);
+		video.setStatus(false);
+		videoRepository.save(video);
 	}
 
 	@Override

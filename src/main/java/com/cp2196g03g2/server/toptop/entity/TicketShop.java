@@ -45,6 +45,7 @@ public class TicketShop {
 	private TicketStatus status;
 	
 	
+	@CreationTimestamp
 	@Column(nullable = false, updatable = false, columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
 	@JsonSerialize(as = Date.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
