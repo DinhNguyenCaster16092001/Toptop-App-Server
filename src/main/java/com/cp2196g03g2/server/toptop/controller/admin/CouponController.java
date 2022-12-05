@@ -22,7 +22,7 @@ import com.cp2196g03g2.server.toptop.service.ICouponService;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/v1/management/coupon")
-@PreAuthorize("hasAnyAuthority('ROLE_TICKET_MODERATOR', 'ROLE_SUPERADMIN')")
+@PreAuthorize("hasAnyAuthority('ROLE_COUPON_MODERATOR', 'ROLE_SUPERADMIN')")
 public class CouponController {
 	
 	@Autowired
